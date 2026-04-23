@@ -212,7 +212,22 @@ textarea.inp{resize:vertical;min-height:72px;}
       <button class="xb" onclick="closeOv('ovStore')">✕</button>
     </div>
     <div id="mStoreDetails"></div>
-    <div style="margin-top:16px;" class="fg">
+
+    <!-- أيقونة المتجر -->
+    <div class="fg" style="margin-top:14px;">
+      <label class="lb">أيقونة المتجر (اختيارية)</label>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+        <div id="iconPreview" style="width:56px;height:56px;border-radius:12px;background:var(--sf2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0;">🏪</div>
+        <div style="flex:1;">
+          <input type="file" id="iconFile" accept="image/*" style="display:none;" onchange="previewIcon(this)">
+          <button class="btn btn-out btn-sm" onclick="document.getElementById('iconFile').click()" style="margin-bottom:6px;">📁 اختر صورة</button>
+          <div style="font-size:11px;color:var(--mu);">PNG أو JPG · الحجم الأمثل 200×200</div>
+          <input type="text" class="inp" id="iconUrl" placeholder="أو أدخل رابط الصورة مباشرة" style="margin-top:6px;font-size:12px;" oninput="previewIconUrl(this.value)">
+        </div>
+      </div>
+    </div>
+
+    <div class="fg" style="margin-top:14px;">
       <label class="lb">ملاحظة (اختيارية للمتجر)</label>
       <textarea class="inp" id="adminNote" placeholder="سبب الرفض أو ملاحظة للمتجر..."></textarea>
     </div>
@@ -321,8 +336,13 @@ function renderStoresTable(stores) {
       ${stores.map(s => `
         <tr>
           <td>
-            <div class="store-name">${s.name}</div>
-            <div class="store-cat">${catLabel[s.category]||s.category}</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              ${s.icon_url ? `<img src="${s.icon_url}" style="width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">` : ''}
+              <div>
+                <div class="store-name">${s.name}</div>
+                <div class="store-cat">${catLabel[s.category]||s.category}</div>
+              </div>
+            </div>
           </td>
           <td>
             ${s.ig_handle ? `<div style="font-size:12px;color:var(--mu)">📸 ${s.ig_handle}</div>` : ''}
@@ -418,7 +438,16 @@ async function quickReject(id)  { await updateStoreStatus(id,'rejected'); }
 
 async function updateStoreStatus(id, status) {
   const note = document.getElementById('adminNote')?.value || '';
-  const { error } = await db.from('stores').update({ status, admin_note: note }).eq('id', id);
+  // Save icon if provided
+  const iconUrl = document.getElementById('iconUrl')?.value?.trim();
+  const updateData = { status, admin_note: note };
+  if (iconUrl) updateData.icon_url = iconUrl;
+  
+  // Handle file upload icon (base64)
+  const iconBase64 = document.getElementById('iconPreview')?.dataset?.base64;
+  if (iconBase64) updateData.icon_url = iconBase64;
+
+  const { error } = await db.from('stores').update(updateData).eq('id', id);
   if (error) return showToast('❌ خطأ في التحديث','var(--rd)');
   showToast(status==='approved' ? '✅ تم اعتماد المتجر' : '❌ تم رفض المتجر', status==='approved'?'var(--gr)':'var(--rd)');
   loadStores(); loadStats();
