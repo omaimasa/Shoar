@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#1a1a18;--sf:#222220;--sf2:#2a2a27;--bd:#333330;--bd2:#3d3d39;--em:#7a8c6e;--em-l:#96a886;--em-d:rgba(122,140,110,.13);--tx:#d4d0c8;--mu:#6e6b60;--dm:#3a3a36;--gr:#7a8c6e;--rd:#c0504a;--r:14px;}
+:root{--bg:#1a1a18;--sf:#222220;--sf2:#2a2a27;--bd:#333330;--bd2:#3d3d39;--em:#7a8c6e;--em-l:#96a886;--em-d:rgba(122,140,110,.13);--tx:#d4d0c8;--mu:#6e6b60;--dm:#3a3a36;--rd:#c0504a;--r:14px;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;background-image:radial-gradient(circle,rgba(255,255,255,.03) 1px,transparent 1px);background-size:28px 28px;}
@@ -15,39 +15,30 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .back{font-size:13px;color:var(--mu);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s;}
 .back:hover{color:var(--em);}
 .container{max-width:900px;margin:0 auto;padding:40px 24px 80px;}
-
-/* Store Header */
-.store-header{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:28px;margin-bottom:24px;display:flex;gap:20px;align-items:flex-start;}
-.store-avatar{width:72px;height:72px;border-radius:16px;background:var(--sf2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
-.store-info{flex:1;}
+.store-header{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:28px;margin-bottom:20px;display:flex;gap:20px;align-items:flex-start;}
+.store-avatar{width:72px;height:72px;border-radius:16px;background:var(--sf2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden;}
 .store-name{font-size:24px;font-weight:700;margin-bottom:4px;}
 .store-cat{font-size:13px;color:var(--mu);margin-bottom:12px;}
 .store-links{display:flex;gap:8px;flex-wrap:wrap;}
 .store-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--mu);background:var(--sf2);padding:5px 12px;border-radius:7px;text-decoration:none;border:1px solid var(--bd);transition:all .2s;}
 .store-link:hover{color:var(--em);border-color:var(--em);}
 .vbadge{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--em);background:var(--em-d);padding:3px 10px;border-radius:100px;border:1px solid rgba(122,140,110,.3);}
-
-/* Score Summary */
-.score-grid{display:grid;grid-template-columns:auto 1fr;gap:24px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:24px;margin-bottom:24px;align-items:center;}
+.score-grid{display:grid;grid-template-columns:auto 1fr;gap:24px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:24px;margin-bottom:20px;align-items:center;}
 .big-score{text-align:center;}
 .score-num{font-size:52px;font-weight:700;color:var(--em);line-height:1;}
 .score-stars{font-size:18px;color:var(--em);margin:4px 0;}
 .score-count{font-size:12px;color:var(--mu);}
 .bars-wrap{display:flex;flex-direction:column;gap:6px;}
 .bar-row{display:flex;align-items:center;gap:8px;font-size:12px;}
-.bar-label{color:var(--mu);min-width:24px;text-align:left;}
+.bar-label{color:var(--mu);min-width:24px;}
 .bar-track{flex:1;height:6px;background:var(--sf2);border-radius:3px;overflow:hidden;}
-.bar-fill{height:100%;background:var(--em);border-radius:3px;transition:width .8s ease;}
-.bar-pct{color:var(--mu);min-width:28px;text-align:left;}
-
-/* Aspects */
-.aspects{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+.bar-fill{height:100%;background:var(--em);border-radius:3px;}
+.bar-pct{color:var(--mu);min-width:28px;}
+.aspects{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
 .asp-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px;text-align:center;}
 .asp-label{font-size:11px;color:var(--mu);margin-bottom:6px;}
 .asp-val{font-size:20px;font-weight:700;color:var(--em);}
-
-/* Trust Badge */
-.trust-section{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:24px;}
+.trust-section{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:20px;}
 .trust-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .trust-title{font-size:14px;font-weight:600;}
 .trust-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:500;}
@@ -62,11 +53,10 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .crit-fill{height:100%;border-radius:2px;}
 .crit-val{font-size:10px;color:var(--mu);min-width:28px;}
 .ai-note{font-size:10px;color:var(--mu);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);}
-
-/* Reviews */
 .sec-title{font-size:16px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
-.btn-review{background:var(--em);color:#1a1a18;border:none;padding:9px 20px;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
-.btn-review:hover{background:var(--em-l);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;}
+.btn-em{background:var(--em);color:#1a1a18;}.btn-em:hover{background:var(--em-l);}
+.btn-out{background:transparent;border:1px solid var(--bd2);color:var(--mu);}.btn-out:hover{border-color:var(--em);color:var(--em);}
 .review-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px;margin-bottom:12px;}
 .rev-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .rev-avatar{width:36px;height:36px;border-radius:50%;background:var(--sf2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--em);flex-shrink:0;}
@@ -80,28 +70,131 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .loader{text-align:center;padding:40px;color:var(--mu);}
 .spinner{width:28px;height:28px;border:2px solid var(--bd2);border-top-color:var(--em);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-
-/* Desc */
-.store-desc{font-size:14px;color:var(--mu);line-height:1.7;padding:16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:24px;}
-
-@media(max-width:640px){
-  nav{padding:12px 16px;}
-  .container{padding:20px 16px 60px;}
-  .store-header{flex-direction:column;gap:14px;}
-  .score-grid{grid-template-columns:1fr;gap:16px;}
-  .aspects{grid-template-columns:repeat(2,1fr);}
-}
+/* Auth Modal */
+.ov{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.84);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.ov.open{opacity:1;pointer-events:all;}
+.modal{background:var(--sf);border:1px solid var(--bd2);border-radius:20px;padding:28px;width:100%;max-width:420px;max-height:92vh;overflow-y:auto;}
+.mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.mt{font-size:18px;font-weight:700;}
+.xb{background:var(--sf2);border:1px solid var(--bd2);color:var(--mu);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.xb:hover{color:var(--tx);}
+.fg{margin-bottom:14px;}
+.lb{display:block;font-size:12px;font-weight:500;color:var(--mu);margin-bottom:5px;}
+.inp{width:100%;background:var(--sf2);border:1px solid var(--bd2);border-radius:10px;padding:10px 13px;color:var(--tx);font-family:inherit;font-size:14px;outline:none;direction:rtl;transition:border-color .2s;}
+.inp:focus{border-color:var(--em);}
+textarea.inp{resize:vertical;min-height:80px;}
+.spr{display:flex;gap:5px;margin-top:4px;}
+.sp{font-size:24px;cursor:pointer;color:var(--dm);transition:all .15s;user-select:none;}
+.sp:hover,.sp.on{color:var(--em);transform:scale(1.1);}
+.asps{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.asp{background:var(--sf2);border:1px solid var(--bd2);border-radius:9px;padding:9px;}
+.asl{font-size:11px;color:var(--mu);margin-bottom:5px;}
+.ass{display:flex;gap:3px;}
+.as{font-size:16px;cursor:pointer;color:var(--dm);transition:color .15s;}
+.as.on{color:var(--em);}
+.divid{height:1px;background:var(--bd);margin:14px 0;}
+.auth-step{display:none;}.auth-step.active{display:block;}
+.auth-icon{font-size:38px;text-align:center;margin-bottom:8px;}
+.auth-title{font-size:19px;font-weight:700;text-align:center;margin-bottom:5px;}
+.auth-sub{font-size:13px;color:var(--mu);text-align:center;margin-bottom:20px;line-height:1.6;}
+.phone-row{display:flex;gap:8px;}
+.code-inp{background:var(--sf2);border:1px solid var(--bd2);border-radius:10px;padding:10px 12px;color:var(--tx);font-family:inherit;font-size:14px;outline:none;width:80px;text-align:center;direction:ltr;transition:border-color .2s;}
+.code-inp:focus{border-color:var(--em);}
+.otp-row{display:flex;gap:9px;justify-content:center;margin:6px 0 4px;}
+.otp-b{width:48px;height:54px;background:var(--sf2);border:2px solid var(--bd2);border-radius:11px;text-align:center;font-size:22px;font-weight:700;color:var(--tx);outline:none;font-family:inherit;direction:ltr;transition:border-color .2s;}
+.otp-b:focus,.otp-b.done{border-color:var(--em);}
+.resend-row{text-align:center;font-size:13px;color:var(--mu);margin-top:8px;}
+.resend-btn{color:var(--em);background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;}
+.err-msg{font-size:11px;color:var(--rd);margin-top:4px;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);padding:11px 22px;border-radius:100px;font-size:13px;font-weight:500;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.user-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:100px;background:var(--sf);border:1px solid var(--bd2);font-size:12px;color:var(--mu);}
+.online{width:6px;height:6px;border-radius:50%;background:var(--em);}
+@media(max-width:640px){nav{padding:12px 16px;}.container{padding:20px 16px 60px;}.store-header{flex-direction:column;}.score-grid{grid-template-columns:1fr;}.aspects{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
 <body>
 <nav>
   <a href="index.html"><img src="shoar-logo.png" alt="Shoar" style="height:30px;width:auto;display:block;"></a>
-  <a class="back" href="index.html">→ الرئيسية</a>
+  <div id="navUser"></div>
 </nav>
 
 <div class="container" id="main">
   <div class="loader"><div class="spinner"></div>جاري التحميل...</div>
 </div>
+
+<!-- Review Modal -->
+<div class="ov" id="ovReview">
+  <div class="modal">
+    <div class="mhd"><div class="mt">✍️ اكتب تقييمك</div><button class="xb" onclick="closeOv('ovReview')">✕</button></div>
+    <div class="fg"><label class="lb">التقييم الإجمالي</label>
+      <div class="spr" id="starRow">
+        <span class="sp" onclick="setStar(1)">★</span><span class="sp" onclick="setStar(2)">★</span>
+        <span class="sp" onclick="setStar(3)">★</span><span class="sp" onclick="setStar(4)">★</span>
+        <span class="sp" onclick="setStar(5)">★</span>
+      </div>
+    </div>
+    <div class="fg"><label class="lb">تقييم تفصيلي</label>
+      <div class="asps">
+        <div class="asp"><div class="asl">🚚 التوصيل</div><div class="ass" data-k="delivery"><span class="as" onclick="setAsp('delivery',1)">★</span><span class="as" onclick="setAsp('delivery',2)">★</span><span class="as" onclick="setAsp('delivery',3)">★</span><span class="as" onclick="setAsp('delivery',4)">★</span><span class="as" onclick="setAsp('delivery',5)">★</span></div></div>
+        <div class="asp"><div class="asl">📦 الجودة</div><div class="ass" data-k="quality"><span class="as" onclick="setAsp('quality',1)">★</span><span class="as" onclick="setAsp('quality',2)">★</span><span class="as" onclick="setAsp('quality',3)">★</span><span class="as" onclick="setAsp('quality',4)">★</span><span class="as" onclick="setAsp('quality',5)">★</span></div></div>
+        <div class="asp"><div class="asl">💬 الدعم</div><div class="ass" data-k="support"><span class="as" onclick="setAsp('support',1)">★</span><span class="as" onclick="setAsp('support',2)">★</span><span class="as" onclick="setAsp('support',3)">★</span><span class="as" onclick="setAsp('support',4)">★</span><span class="as" onclick="setAsp('support',5)">★</span></div></div>
+        <div class="asp"><div class="asl">💰 القيمة</div><div class="ass" data-k="value"><span class="as" onclick="setAsp('value',1)">★</span><span class="as" onclick="setAsp('value',2)">★</span><span class="as" onclick="setAsp('value',3)">★</span><span class="as" onclick="setAsp('value',4)">★</span><span class="as" onclick="setAsp('value',5)">★</span></div></div>
+      </div>
+    </div>
+    <div class="fg"><label class="lb">تجربتك بكلماتك</label><textarea class="inp" id="rvText" placeholder="شاركنا تجربتك الحقيقية..."></textarea></div>
+    <div class="fg"><label class="lb">الاسم المعروض</label><input type="text" class="inp" id="rvName" readonly style="opacity:.6;"></div>
+    <button class="btn btn-em" style="width:100%;justify-content:center;padding:12px;" id="rvBtn" onclick="submitReview()">نشر التقييم 🚀</button>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="ov" id="ovAuth">
+  <div class="modal" style="max-width:380px;">
+    <div class="auth-step active" id="stepPhone">
+      <div class="mhd"><div></div><button class="xb" onclick="closeOv('ovAuth')">✕</button></div>
+      <div class="auth-icon">📱</div>
+      <div class="auth-title">سجّل دخولك</div>
+      <div class="auth-sub">للكتابة تقييم حقيقي تحتاج تسجيل جوالك</div>
+      <div class="fg">
+        <div class="phone-row">
+          <input type="tel" class="code-inp" id="dialCode" value="+966" maxlength="5">
+          <input type="tel" class="inp" id="phoneNum" placeholder="05xxxxxxxx" maxlength="10" style="direction:ltr;" onkeydown="if(event.key==='Enter')sendOTP()">
+        </div>
+        <div class="err-msg" id="phoneErr" style="display:none;"></div>
+      </div>
+      <button class="btn btn-em" style="width:100%;justify-content:center;padding:12px;" id="sendBtn" onclick="sendOTP()">إرسال رمز التحقق</button>
+    </div>
+    <div class="auth-step" id="stepOTP">
+      <div class="mhd"><button class="btn-out btn" style="padding:5px 10px;font-size:12px;" onclick="goStep('stepPhone')">← رجوع</button><button class="xb" onclick="closeOv('ovAuth')">✕</button></div>
+      <div class="auth-icon">🔐</div>
+      <div class="auth-title">رمز التحقق</div>
+      <div class="auth-sub" id="otpSub">أُرسل رمز إلى جوالك</div>
+      <div class="otp-row">
+        <input class="otp-b" id="d1" type="tel" maxlength="1" oninput="otpIn(this,'d2')" onkeydown="otpDel(event,this,'')">
+        <input class="otp-b" id="d2" type="tel" maxlength="1" oninput="otpIn(this,'d3')" onkeydown="otpDel(event,this,'d1')">
+        <input class="otp-b" id="d3" type="tel" maxlength="1" oninput="otpIn(this,'d4')" onkeydown="otpDel(event,this,'d2')">
+        <input class="otp-b" id="d4" type="tel" maxlength="1" oninput="otpIn(this,'d5')" onkeydown="otpDel(event,this,'d3')">
+        <input class="otp-b" id="d5" type="tel" maxlength="1" oninput="otpIn(this,'d6')" onkeydown="otpDel(event,this,'d4')">
+        <input class="otp-b" id="d6" type="tel" maxlength="1" oninput="otpIn(this,'')"   onkeydown="otpDel(event,this,'d5')">
+      </div>
+      <div class="err-msg" id="otpErr" style="display:none;text-align:center;margin-top:6px;"></div>
+      <div class="resend-row" id="resendRow">إعادة الإرسال بعد <span id="timerN" style="color:var(--em);font-weight:600;">60</span> ثانية</div>
+      <button class="btn btn-em" style="width:100%;justify-content:center;padding:12px;margin-top:14px;" id="verifyBtn" onclick="verifyOTP()">تحقق ✓</button>
+    </div>
+    <div class="auth-step" id="stepName">
+      <div class="mhd"><div></div><button class="xb" onclick="closeOv('ovAuth')">✕</button></div>
+      <div class="auth-icon">👋</div>
+      <div class="auth-title">أهلاً بك!</div>
+      <div class="auth-sub">اختر اسماً يظهر مع تقييماتك</div>
+      <div class="fg"><input type="text" class="inp" id="nameInp" placeholder="مثل: أحمد العتيبي" onkeydown="if(event.key==='Enter')saveName()"></div>
+      <button class="btn btn-em" style="width:100%;justify-content:center;padding:12px;" id="saveNameBtn" onclick="saveName()">ابدأ التقييم 🚀</button>
+      <button style="width:100%;padding:8px;margin-top:6px;background:none;border:none;color:var(--mu);font-family:inherit;font-size:13px;cursor:pointer;" onclick="saveName(true)">تخطي</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const SUPA_URL = 'https://tmkxsgbmrhssxajflgdq.supabase.co';
@@ -109,83 +202,101 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);
 
-const CEM = {store:'م',product:'ن',service:'خ',specialist:'ا',other:'أ'};
-const CBG = {store:'#1a1a2e',product:'#1e2a1e',service:'#2a1e1e',specialist:'#1e1e2a',other:'#1e1e1e'};
-const CAC = {store:'#7a8c6e',product:'#4ade80',service:'#fb7185',specialist:'#818cf8',other:'#94a3b8'};
+const CEM={store:'م',product:'ن',service:'خ',specialist:'ا',other:'أ'};
+const CBG={store:'#1a1a2e',product:'#1e2a1e',service:'#2a1e1e',specialist:'#1e1e2a',other:'#1e1e1e'};
+const CAC={store:'#7a8c6e',product:'#4ade80',service:'#fb7185',specialist:'#818cf8',other:'#94a3b8'};
 
-function stars(n){ return '★'.repeat(Math.round(n||0)) + '☆'.repeat(5-Math.round(n||0)); }
+let currentUser = null;
+let currentStore = null;
+let curStar = 0;
+let aspects = {};
+let otpPhone = '';
+let resendInt = null;
+
+function stars(n){ return '★'.repeat(Math.round(n||0))+'☆'.repeat(5-Math.round(n||0)); }
 function toAr(n){ return String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
 function fmtDate(d){ return new Date(d).toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'}); }
+function openOv(id){ document.getElementById(id).classList.add('open'); }
+function closeOv(id){ document.getElementById(id).classList.remove('open'); }
+function showToast(msg,bg='var(--em)'){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
 async function init() {
+  const { data:{ session }} = await db.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    const { data:p } = await db.from('profiles').select('display_name').eq('id',currentUser.id).single();
+    renderNav(p?.display_name||'مستخدم');
+  }
   const id = new URLSearchParams(location.search).get('id');
   if (!id) { location.href='index.html'; return; }
+  await loadStore(id);
+}
 
-  const [{ data: store }, { data: reviews }] = await Promise.all([
-    db.from('stores_with_stats').select('*').eq('id', id).single(),
-    db.from('reviews').select('*').eq('store_id', id).eq('status','approved').order('created_at',{ascending:false})
+function renderNav(name) {
+  document.getElementById('navUser').innerHTML = `
+    <div class="user-chip"><span class="online"></span>${name}</div>`;
+}
+
+async function loadStore(id) {
+  const [{ data:store },{ data:reviews }] = await Promise.all([
+    db.from('stores_with_stats').select('*').eq('id',id).single(),
+    db.from('reviews').select('*').eq('store_id',id).eq('status','approved').order('created_at',{ascending:false})
   ]);
-
-  if (!store) { document.getElementById('main').innerHTML='<div class="empty">المتجر غير موجود</div>'; return; }
+  if (!store){ document.getElementById('main').innerHTML='<div class="empty">المتجر غير موجود</div>'; return; }
+  currentStore = store;
   document.title = store.name + ' — Shoar';
 
   const r = parseFloat(store.avg_rating)||0;
   const rc = store.review_count||0;
-  const color = (store.trust_score||0) >= 75 ? '#7a8c6e' : (store.trust_score||0) >= 50 ? '#b5933a' : '#c0504a';
-  const tlabel = (store.trust_score||0) >= 75 ? 'موثوق' : (store.trust_score||0) >= 50 ? 'يحتاج تحقق' : 'غير موثوق';
-  const tclass = (store.trust_score||0) >= 75 ? 'tg' : (store.trust_score||0) >= 50 ? 'ty' : 'tr';
+  const tscore = store.trust_score;
+  const color = tscore>=75?'#7a8c6e':tscore>=50?'#b5933a':'#c0504a';
+  const tlabel = tscore>=75?'موثوق':tscore>=50?'يحتاج تحقق':'غير موثوق';
+  const tclass = tscore>=75?'tg':tscore>=50?'ty':'tr';
 
-  // Aspect averages from reviews
-  const asp = {delivery:0,quality:0,support:0,value:0};
-  if (reviews?.length) {
+  const asp={delivery:0,quality:0,support:0,value:0};
+  if(reviews?.length){
     ['delivery','quality','support','value'].forEach(k=>{
-      const vals = reviews.filter(r=>r[k]).map(r=>r[k]);
-      asp[k] = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : 0;
+      const v=reviews.filter(r=>r[k]).map(r=>r[k]);
+      asp[k]=v.length?(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1):0;
     });
   }
 
-  const trustHTML = store.trust_score !== null && store.trust_score !== undefined ? `
+  const trustHTML = tscore!==null&&tscore!==undefined ? `
     <div class="trust-section">
       <div class="trust-header">
-        <div class="trust-title">✦ تقرير المصداقية بالذكاء الاصطناعي</div>
-        <span class="trust-badge ${tclass}">● ${tlabel} ${store.trust_score}%</span>
+        <div class="trust-title">✦ تقرير المصداقية</div>
+        <span class="trust-badge ${tclass}">● ${tlabel} ${tscore}%</span>
       </div>
       ${(store.trust_data?.criteria||[]).map(c=>{
         const pct=Math.round((c.score/c.weight)*100);
         const bc=pct>=75?'#7a8c6e':pct>=40?'#b5933a':'#c0504a';
-        return `<div class="crit-row">
-          <div style="flex:1"><div class="crit-name">${c.name}</div><div class="crit-note">${c.note}</div></div>
-          <div class="crit-bar"><div class="crit-fill" style="width:${pct}%;background:${bc}"></div></div>
-          <span class="crit-val">${c.score}/${c.weight}</span>
-        </div>`;
+        return `<div class="crit-row"><div style="flex:1"><div class="crit-name">${c.name}</div><div class="crit-note">${c.note}</div></div><div class="crit-bar"><div class="crit-fill" style="width:${pct}%;background:${bc}"></div></div><span class="crit-val">${c.score}/${c.weight}</span></div>`;
       }).join('')}
       ${store.trust_data?.summary?`<div class="ai-note">💡 ${store.trust_data.summary}</div>`:''}
-      <div class="ai-note">يتجدد التقرير كل ٧ أيام · مدعوم بالذكاء الاصطناعي</div>
     </div>` : '';
 
   const reviewsHTML = reviews?.length ? reviews.map(rv=>`
     <div class="review-card">
       <div class="rev-head">
         <div class="rev-avatar">${(rv.author_name||'م')[0]}</div>
-        <div>
-          <div class="rev-name">${rv.author_name||'مستخدم مجهول'}</div>
-          <div class="rev-date">${fmtDate(rv.created_at)}</div>
-        </div>
+        <div><div class="rev-name">${rv.author_name||'مجهول'}</div><div class="rev-date">${fmtDate(rv.created_at)}</div></div>
         <div class="rev-stars">${stars(rv.rating)} ${rv.rating}/5</div>
       </div>
       <div class="rev-body">${rv.body}</div>
       <div class="rev-aspects">
-        ${rv.delivery?`<span class="rev-asp">🚚 التوصيل ${rv.delivery}/5</span>`:''}
-        ${rv.quality?`<span class="rev-asp">📦 الجودة ${rv.quality}/5</span>`:''}
-        ${rv.support?`<span class="rev-asp">💬 الدعم ${rv.support}/5</span>`:''}
-        ${rv.value?`<span class="rev-asp">💰 القيمة ${rv.value}/5</span>`:''}
+        ${rv.delivery?`<span class="rev-asp">🚚 ${rv.delivery}/5</span>`:''}
+        ${rv.quality?`<span class="rev-asp">📦 ${rv.quality}/5</span>`:''}
+        ${rv.support?`<span class="rev-asp">💬 ${rv.support}/5</span>`:''}
+        ${rv.value?`<span class="rev-asp">💰 ${rv.value}/5</span>`:''}
       </div>
     </div>`).join('') : '<div class="empty">لا توجد تقييمات بعد — كن أول من يقيّم!</div>';
 
   document.getElementById('main').innerHTML = `
     <div class="store-header">
-      <div class="store-avatar" style="background:${CBG[store.category]||'#222'};color:${CAC[store.category]||'#7a8c6e'}">${CEM[store.category]||'م'}</div>
-      <div class="store-info">
+      <div class="store-avatar" style="background:${CBG[store.category]||'#222'};color:${CAC[store.category]||'#7a8c6e'}">
+        ${store.icon_url?`<img src="${store.icon_url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`:CEM[store.category]||'م'}
+      </div>
+      <div style="flex:1;">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
           <div class="store-name">${store.name}</div>
           ${store.verified?'<span class="vbadge">✓ موثّق</span>':''}
@@ -205,34 +316,126 @@ async function init() {
         <div class="score-count">${toAr(rc)} تقييم</div>
       </div>
       <div class="bars-wrap">
-        ${[5,4,3,2,1].map(n=>`
-          <div class="bar-row">
-            <span class="bar-label">${n}★</span>
-            <div class="bar-track"><div class="bar-fill" style="width:${store['pct_'+n]||0}%"></div></div>
-            <span class="bar-pct">${store['pct_'+n]||0}%</span>
-          </div>`).join('')}
+        ${[5,4,3,2,1].map(n=>`<div class="bar-row"><span class="bar-label">${n}★</span><div class="bar-track"><div class="bar-fill" style="width:${store['pct_'+n]||0}%"></div></div><span class="bar-pct">${store['pct_'+n]||0}%</span></div>`).join('')}
       </div>
     </div>
 
-    ${(asp.delivery||asp.quality||asp.support||asp.value) ? `
-    <div class="aspects">
+    ${(asp.delivery||asp.quality||asp.support||asp.value)?`<div class="aspects">
       ${asp.delivery?`<div class="asp-card"><div class="asp-label">🚚 التوصيل</div><div class="asp-val">${asp.delivery}</div></div>`:''}
       ${asp.quality?`<div class="asp-card"><div class="asp-label">📦 الجودة</div><div class="asp-val">${asp.quality}</div></div>`:''}
       ${asp.support?`<div class="asp-card"><div class="asp-label">💬 الدعم</div><div class="asp-val">${asp.support}</div></div>`:''}
       ${asp.value?`<div class="asp-card"><div class="asp-label">💰 القيمة</div><div class="asp-val">${asp.value}</div></div>`:''}
-    </div>` : ''}
+    </div>`:''}
 
-    ${store.description?`<div class="store-desc">${store.description}</div>`:''}
+    ${store.description?`<div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:20px;font-size:14px;color:var(--mu);line-height:1.7;">${store.description}</div>`:''}
 
     ${trustHTML}
 
     <div class="sec-title">
       <span>التقييمات (${toAr(rc)})</span>
-      <button class="btn-review" onclick="location.href='index.html?review=${store.id}'">✍️ اكتب تقييم</button>
+      <button class="btn btn-em" onclick="openReviewModal()">✍️ اكتب تقييم</button>
     </div>
     ${reviewsHTML}
   `;
 }
+
+/* ── Review ── */
+function openReviewModal() {
+  if (!currentUser) {
+    openOv('ovAuth');
+    return;
+  }
+  curStar=0; aspects={};
+  document.querySelectorAll('.sp,.as').forEach(s=>s.classList.remove('on'));
+  document.getElementById('rvText').value='';
+  db.from('profiles').select('display_name').eq('id',currentUser.id).single().then(({data:p})=>{
+    document.getElementById('rvName').value = p?.display_name||'مستخدم مجهول';
+  });
+  openOv('ovReview');
+}
+
+async function submitReview() {
+  if (!currentUser){ openOv('ovAuth'); return; }
+  if (!curStar) return showToast('⚠️ اختر تقييماً من ١ إلى ٥','var(--rd)');
+  const body = document.getElementById('rvText').value.trim();
+  if (!body) return showToast('⚠️ اكتب تجربتك','var(--rd)');
+  const btn = document.getElementById('rvBtn');
+  btn.disabled=true; btn.textContent='جاري النشر...';
+  const {error} = await db.from('reviews').insert({
+    store_id: currentStore.id,
+    rating: curStar,
+    delivery: aspects.delivery||null,
+    quality: aspects.quality||null,
+    support: aspects.support||null,
+    value: aspects.value||null,
+    body,
+    author_name: document.getElementById('rvName').value,
+    user_id: currentUser.id,
+    status: 'approved'
+  });
+  btn.disabled=false; btn.textContent='نشر التقييم 🚀';
+  if(error){ console.error(error); return showToast('❌ خطأ في النشر','var(--rd)'); }
+  closeOv('ovReview');
+  showToast('✅ تم نشر تقييمك!');
+  setTimeout(()=>loadStore(currentStore.id), 800);
+}
+
+function setStar(n){ curStar=n; document.querySelectorAll('#starRow .sp').forEach((s,i)=>s.classList.toggle('on',i<n)); }
+function setAsp(k,n){ aspects[k]=n; document.querySelector(`[data-k="${k}"]`).querySelectorAll('.as').forEach((s,i)=>s.classList.toggle('on',i<n)); }
+
+/* ── Auth ── */
+async function sendOTP(){
+  const code=document.getElementById('dialCode').value.trim();
+  const local=document.getElementById('phoneNum').value.trim().replace(/^0/,'');
+  if(!local||local.length<9){document.getElementById('phoneErr').textContent='رقم غير صحيح';document.getElementById('phoneErr').style.display='block';return;}
+  document.getElementById('phoneErr').style.display='none';
+  otpPhone=code+local;
+  const btn=document.getElementById('sendBtn'); btn.disabled=true; btn.textContent='جاري الإرسال...';
+  const {error}=await db.auth.signInWithOtp({phone:otpPhone});
+  btn.disabled=false; btn.textContent='إرسال رمز التحقق';
+  if(error){document.getElementById('phoneErr').textContent='تعذّر الإرسال';document.getElementById('phoneErr').style.display='block';return;}
+  document.getElementById('otpSub').textContent=`أُرسل رمز إلى ${otpPhone}`;
+  goStep('stepOTP'); startTimer();
+  setTimeout(()=>document.getElementById('d1').focus(),100);
+}
+
+function otpIn(el,nextId){el.value=el.value.replace(/\D/g,'');el.classList.toggle('done',!!el.value);if(el.value&&nextId)document.getElementById(nextId).focus();if(getOTP().length===6)verifyOTP();}
+function otpDel(e,el,prevId){if(e.key==='Backspace'&&!el.value&&prevId)document.getElementById(prevId).focus();}
+function getOTP(){return['d1','d2','d3','d4','d5','d6'].map(id=>document.getElementById(id).value).join('');}
+
+async function verifyOTP(){
+  const token=getOTP();
+  if(token.length<6){document.getElementById('otpErr').textContent='أدخل الرمز كاملاً';document.getElementById('otpErr').style.display='block';return;}
+  document.getElementById('otpErr').style.display='none';
+  const btn=document.getElementById('verifyBtn'); btn.disabled=true; btn.textContent='جاري التحقق...';
+  const {data,error}=await db.auth.verifyOtp({phone:otpPhone,token,type:'sms'});
+  btn.disabled=false; btn.textContent='تحقق ✓';
+  if(error){document.getElementById('otpErr').textContent='رمز غير صحيح';document.getElementById('otpErr').style.display='block';return;}
+  currentUser=data.user; clearInterval(resendInt);
+  const {data:profile}=await db.from('profiles').select('display_name').eq('id',currentUser.id).single();
+  if(!profile?.display_name){goStep('stepName');}
+  else{finishAuth(profile.display_name);}
+}
+
+async function resendOTP(){await db.auth.signInWithOtp({phone:otpPhone});['d1','d2','d3','d4','d5','d6'].forEach(id=>{const el=document.getElementById(id);el.value='';el.classList.remove('done');});document.getElementById('d1').focus();startTimer();showToast('📨 تم إعادة إرسال الرمز');}
+function startTimer(){let s=60;const row=document.getElementById('resendRow');row.innerHTML=`إعادة الإرسال بعد <span id="timerN" style="color:var(--em);font-weight:600;">${s}</span> ثانية`;clearInterval(resendInt);resendInt=setInterval(()=>{s--;const n=document.getElementById('timerN');if(n)n.textContent=s;if(s<=0){clearInterval(resendInt);row.innerHTML=`<button class="resend-btn" onclick="resendOTP()">إعادة إرسال الرمز</button>`;}},1000);}
+
+async function saveName(skip=false){
+  const name=skip?'مستخدم مجهول':(document.getElementById('nameInp').value.trim()||'مستخدم مجهول');
+  const btn=document.getElementById('saveNameBtn'); btn.disabled=true; btn.textContent='جاري الحفظ...';
+  await db.from('profiles').upsert({id:currentUser.id,display_name:name,phone:otpPhone});
+  btn.disabled=false;
+  finishAuth(name);
+}
+
+function finishAuth(name){
+  closeOv('ovAuth'); renderNav(name);
+  showToast(`✅ أهلاً ${name}!`);
+  openReviewModal();
+}
+
+function goStep(id){document.querySelectorAll('.auth-step').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
 init();
 </script>
