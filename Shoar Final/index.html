@@ -485,8 +485,8 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
     <li><a href="pages/about.html">من نحن</a></li>
   </ul>
   <div class="nav-acts" id="navActs">
-    <button class="btn btn-out btn-sm" onclick="openStoreModal()">🏪 أضف متجرك</button>
-    <button class="btn btn-gold btn-sm" onclick="requireAuth(()=>openReviewModal(null))">⭐ اكتب تقييم</button>
+    <button class="btn btn-out btn-sm" onclick="openStoreModal()">إضافة متجر</button>
+    <button class="btn btn-gold btn-sm" onclick="requireAuth(()=>openReviewModal(null))">كتابة تقييم</button>
   </div>
 </nav>
 
@@ -644,7 +644,7 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
 <!-- MODAL: كتابة تقييم -->
 <div class="ov" id="ovReview">
   <div class="modal">
-    <div class="mhd"><div class="mt">✍️ اكتب تقييمك</div><button class="xb" onclick="closeOv('ovReview')">✕</button></div>
+    <div class="mhd"><div class="mt">اكتب تقييمك</div><button class="xb" onclick="closeOv('ovReview')">✕</button></div>
     <div class="fg"><label class="lb">اختر المتجر</label><select class="inp" id="rvStore"></select></div>
     <div class="fg"><label class="lb">التقييم الإجمالي</label>
       <div class="spr" id="starRow">
@@ -661,7 +661,7 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
         <div class="asp"><div class="asl">💰 القيمة/السعر</div><div class="ass" data-k="value"><span class="as" onclick="setAsp('value',1)">★</span><span class="as" onclick="setAsp('value',2)">★</span><span class="as" onclick="setAsp('value',3)">★</span><span class="as" onclick="setAsp('value',4)">★</span><span class="as" onclick="setAsp('value',5)">★</span></div></div>
       </div>
     </div>
-    <div class="fg"><label class="lb">تجربتك بكلماتك</label><textarea class="inp" id="rvText" placeholder="شاركنا تجربتك الحقيقية..."></textarea></div>
+    <div class="fg"><label class="lb">تجربتك بكلماتك</label><textarea class="inp" id="rvText" placeholder="شاركنا تجربتك (اختياري)..."></textarea></div>
     <div class="fg"><label class="lb">الاسم المعروض</label><input type="text" class="inp" id="rvName" readonly style="opacity:.6;"></div>
     <button class="btn btn-gold" style="width:100%;justify-content:center;padding:13px;" id="rvBtn" onclick="submitReview()">نشر التقييم 🚀</button>
   </div>
@@ -670,7 +670,7 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
 <!-- MODAL: إضافة متجر -->
 <div class="ov" id="ovStore">
   <div class="modal">
-    <div class="mhd"><div class="mt">🏪 طلب إدراج متجر</div><button class="xb" onclick="closeOv('ovStore')">✕</button></div>
+    <div class="mhd"><div class="mt">طلب إدراج متجر</div><button class="xb" onclick="closeOv('ovStore')">✕</button></div>
     <div class="note-box">📋 التسجيل مجاني. سيُراجع طلبك خلال <strong>٢٤ ساعة</strong>.</div>
     <div class="fg"><label class="lb">اسم المتجر *</label><input type="text" class="inp" id="sName" placeholder="مثل: ستور الأناقة"></div>
     <div class="fg"><label class="lb">الفئة *</label>
@@ -903,7 +903,7 @@ function finishAuth(name) {
 function renderNav(name) {
   document.getElementById('navActs').innerHTML = `
     <div class="user-chip"><span class="online"></span>${name}</div>
-    <button class="btn btn-gold btn-sm" onclick="requireAuth(()=>openReviewModal(null))">⭐ اكتب تقييم</button>
+    <button class="btn btn-gold btn-sm" onclick="requireAuth(()=>openReviewModal(null))">كتابة تقييم</button>
     <button class="btn-ghost" onclick="doLogout()">خروج</button>`;
 }
 
@@ -1054,13 +1054,21 @@ function populateSel() {
    REVIEW
    ══════════════════════════════════════════ */
 async function openReviewModal(id) {
+  // تحقق دائماً من الجلسة قبل فتح النموذج
+  const { data: { session } } = await db.auth.getSession();
+  if (!session?.user) {
+    currentUser = null;
+    pendingCb = () => openReviewModal(id);
+    goStep('stepPhone');
+    openOv('ovAuth');
+    return;
+  }
+  currentUser = session.user;
   curStar=0; aspects={};
   document.querySelectorAll('.sp,.as').forEach(s=>s.classList.remove('on'));
   document.getElementById('rvText').value = '';
-  if (currentUser) {
-    const { data: p } = await db.from('profiles').select('display_name').eq('id',currentUser.id).single();
-    document.getElementById('rvName').value = p?.display_name || 'مستخدم مجهول';
-  }
+  const { data: p } = await db.from('profiles').select('display_name').eq('id',currentUser.id).single();
+  document.getElementById('rvName').value = p?.display_name || 'مستخدم مجهول';
   if (id) document.getElementById('rvStore').value = id;
   openOv('ovReview');
 }
@@ -1181,7 +1189,7 @@ function showHeroResults(q) {
       const ts  = s.trust_score;
       const tdot = ts >= 75 ? 'td-green' : ts >= 50 ? 'td-yellow' : ts !== null && ts !== undefined ? 'td-red' : 'td-none';
       return `
-      <div class="inline-result-item" onclick="requireAuth(()=>openReviewModal('${s.id}'))">
+      <div class="inline-result-item" onclick="location.href='store.html?id=${s.id}'">
         <div class="ir-avatar" style="background:${CBG[s.category]||'#222'};color:${CAC[s.category]||'#7a8c6e'}">${CEM[s.category]||'م'}</div>
         <div class="ir-info">
           <div class="ir-name">${s.name}</div>
@@ -1258,40 +1266,48 @@ async function runInlineAI(q) {
   const isURL = /^(https?:\/\/|www\.)/i.test(q);
   const cleanURL = isURL ? (q.startsWith('http') ? q : 'https://' + q) : null;
 
-  const prompt = isURL
-    ? `أنت محلل مصداقية متاجر إلكترونية سعودية.
-فحص هذا الموقع: ${cleanURL}
-بناءً على اسم النطاق والبيانات المتاحة لديك، حلّل المتجر وأعطِ تقرير JSON فقط بدون أي نص إضافي.
+  // ابحث عن المتجر في قاعدة البيانات أولاً لجلب بياناته الحقيقية
+  const storeInfo = allStores.find(s => 
+    s.name?.toLowerCase().includes(q.toLowerCase()) ||
+    s.website?.toLowerCase().includes(q.toLowerCase()) ||
+    s.ig_handle?.toLowerCase().includes(q.toLowerCase())
+  );
 
-مهم: إذا كان الرابط يحتوي على كلمات تدل على منتج (مثل hair, oil, beauty, care) فاستنتج طبيعة المتجر.
-لا تقل أبداً "لا يوجد إنستاجرام" إلا إذا كنت متأكداً — الغياب عن معرفتك لا يعني العدم.
+  const igHandle = storeInfo?.ig_handle || (q.includes('instagram') ? q : null);
+  const website  = storeInfo?.website  || (isURL ? cleanURL : null);
+  const storeName = storeInfo?.name || q;
+  const reviewCount = storeInfo?.review_count || 0;
+  const avgRating   = storeInfo?.avg_rating || 0;
 
-أعطِ JSON بهذا الشكل:
+  const hasWebsite  = !!(website  && website  !== 'غير معروف');
+  const hasIG       = !!(igHandle && igHandle !== 'غير معروف');
+  const hasReviews  = reviewCount > 0;
+  const digitalNote = hasWebsite && hasIG ? `لديه موقع (${website}) وإنستاجرام (${igHandle}) — حضور رقمي مؤكد`
+                    : hasWebsite ? `لديه موقع إلكتروني: ${website}`
+                    : hasIG      ? `لديه حساب إنستاجرام: ${igHandle}`
+                    : isURL      ? `الرابط المقدم: ${cleanURL} — موقع إلكتروني حقيقي`
+                    : 'لم تُقدَّم معلومات تواصل — لا تفترض الغياب';
+
+  const prompt = `أنت محلل مصداقية متاجر إلكترونية سعودية. حلّل هذا المتجر وأعطِ تقرير JSON فقط.
+
+معلومات المتجر:
+- الاسم: ${storeName}
+- الموقع: ${website || (isURL ? cleanURL : 'لم يُذكر')}
+- إنستاجرام: ${igHandle || 'لم يُذكر'}
+- التقييمات في Shoar: ${reviewCount > 0 ? reviewCount + ' تقييم، متوسط ' + avgRating + '/5' : 'لا توجد بعد'}
+- الحضور الرقمي: ${digitalNote}
+
+قواعد التقييم:
+1. إذا وُجد موقع أو إنستاجرام → الحضور الرقمي يستحق 20-25/25
+2. إذا وُجدت تقييمات → الموثوقية تستحق نقاط عالية
+3. لا تقل "لا يوجد حضور رقمي" إذا كان هناك موقع أو إنستاجرام
+4. "لم يُذكر" ≠ "غير موجود" — فرق جوهري
+
+أعطِ JSON:
 {
   "score": <0-100>,
-  "store_name": "<اسم المتجر المستنتج>",
-  "ig_handle": "<@username أو null>",
-  "snap_handle": "<@username أو null>",
-  "criteria": [
-    {"name": "وضوح هوية المتجر", "weight": 25, "score": <0-25>, "note": "<ملاحظة دقيقة>"},
-    {"name": "الحضور الرقمي", "weight": 25, "score": <0-25>, "note": "<ملاحظة دقيقة>"},
-    {"name": "مؤشرات الموثوقية", "weight": 25, "score": <0-25>, "note": "<ملاحظة دقيقة>"},
-    {"name": "وجود مخاطر", "weight": 25, "score": <0-25>, "note": "<ملاحظة دقيقة>"}
-  ],
-  "summary": "<جملة واحدة دقيقة>",
-  "disclaimer": "التحليل مبني على اسم النطاق — للدقة أضف معلومات إضافية",
-  "recommendation": "register" | "needs_more_info" | "suspicious"
-}`
-    : `أنت محلل مصداقية متاجر إلكترونية سعودية. حلّل هذا المتجر بناءً على اسمه وأعطِ تقرير JSON فقط بدون أي نص إضافي.
-اسم المتجر: ${q}
-ملاحظة: لا تفترض غياب حسابات التواصل الاجتماعي — قل فقط "غير محدد" في الملاحظة.
-
-أعطِ JSON بهذا الشكل:
-{
-  "score": <0-100>,
-  "store_name": "${q}",
-  "ig_handle": null,
-  "snap_handle": null,
+  "store_name": "${storeName}",
+  "ig_handle": ${igHandle ? '"' + igHandle + '"' : 'null'},
   "criteria": [
     {"name": "وضوح هوية المتجر", "weight": 25, "score": <0-25>, "note": "<ملاحظة>"},
     {"name": "الحضور الرقمي", "weight": 25, "score": <0-25>, "note": "<ملاحظة>"},
@@ -1299,8 +1315,8 @@ async function runInlineAI(q) {
     {"name": "وجود مخاطر", "weight": 25, "score": <0-25>, "note": "<ملاحظة>"}
   ],
   "summary": "<جملة واحدة>",
-  "disclaimer": "التحليل مبني على الاسم فقط — أضف رابط الموقع للدقة أكثر",
-  "recommendation": "register" | "needs_more_info" | "suspicious"
+  "disclaimer": "${isURL ? 'تحليل مبني على الرابط المقدم' : 'تحليل تقديري — للدقة أضف رابط الموقع'}",
+  "recommendation": "register"
 }`;
 
   try {
