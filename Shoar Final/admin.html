@@ -155,7 +155,7 @@ textarea.inp{resize:vertical;min-height:72px;}
           <div class="page-title">🏪 إدارة المتاجر</div>
           <div class="page-sub">راجع طلبات الإدراج واعتمدها أو ارفضها</div>
         </div>
-        <button class="btn btn-gold btn-sm" onclick="loadStores()">🔄 تحديث</button>
+        <button class="btn btn-gold btn-sm" onclick="loadStores()">تحديث</button>
       </div>
 
       <!-- KPIs -->
@@ -192,7 +192,7 @@ textarea.inp{resize:vertical;min-height:72px;}
           <div class="page-title">⭐ إدارة التقييمات</div>
           <div class="page-sub">راجع التقييمات وأخفِ المخالفة منها</div>
         </div>
-        <button class="btn btn-gold btn-sm" onclick="loadReviews()">🔄 تحديث</button>
+        <button class="btn btn-gold btn-sm" onclick="loadReviews()">تحديث</button>
       </div>
       <div class="table-wrap">
         <div id="reviewsTableWrap">
@@ -335,7 +335,7 @@ function renderStoresTable(stores) {
         <tr>
           <td>
             <div style="display:flex;align-items:center;gap:8px;">
-              ${s.icon_url ? `<img src="${s.icon_url}" style="width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">` : ''}
+              ${s.icon_url ? '<img src="' + encodeURI(s.icon_url) + '" style="width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display=\'none\'">' : ''}
               <div>
                 <div class="store-name">${s.name}</div>
                 <div class="store-cat">${catLabel[s.category]||s.category}</div>
@@ -385,10 +385,13 @@ async function openStoreDetail(id) {
   document.getElementById('adminNote').value = s.admin_note || '';
 
   // كشف التكرار — ابحث عن متاجر مشابهة
+  const nameChunk = (s.name||'').slice(0,6).replace(/'/g,'');
+  const igVal  = s.ig_handle || '__none__';
+  const webVal = s.website   || '__none__';
   const { data: similar } = await db.from('stores')
     .select('id, name, ig_handle, website, status')
     .neq('id', s.id)
-    .or(`name.ilike.%${s.name.slice(0,6)}%,ig_handle.eq.${s.ig_handle||'__none__'},website.eq.${s.website||'__none__'}`);
+    .or('name.ilike.%' + nameChunk + '%,ig_handle.eq.' + igVal + ',website.eq.' + webVal);
 
   const dupHTML = similar?.length ? `
     <div style="background:rgba(217,79,79,.1);border:1px solid rgba(217,79,79,.3);border-radius:9px;padding:12px;margin-bottom:14px;">
@@ -419,14 +422,16 @@ async function openStoreDetail(id) {
     <div class="drow"><span class="dk">الحالة</span><span class="dv">${s.status}</span></div>
     ${trustHTML}`;
 
-  // Pre-fill icon URL if exists
-  const iconInput = document.getElementById('iconUrl');
-  if (iconInput) {
-    iconInput.value = s.icon_url || '';
-    if (s.icon_url) previewIconUrl(s.icon_url);
-    else document.getElementById('iconPreview').innerHTML = '🏪';
-  }
   openOv('ovStore');
+  // Pre-fill icon after modal opens
+  setTimeout(() => {
+    const iconInput = document.getElementById('iconUrl');
+    if (iconInput) {
+      iconInput.value = s.icon_url || '';
+      if (s.icon_url) previewIconUrl(s.icon_url);
+      else document.getElementById('iconPreview').innerHTML = '🏪';
+    }
+  }, 50);
 }
 
 async function approveStore() {
