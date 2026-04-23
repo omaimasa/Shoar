@@ -994,7 +994,7 @@ function renderGrid(data) {
   data.forEach((s, i) => {
     const r = parseFloat(s.avg_rating)||0, rc = s.review_count||0;
     html += `
-    <div class="card fi" style="animation-delay:${i*.06}s" onclick="requireAuth(()=>openReviewModal('${s.id}'))">
+    <div class="card fi" style="animation-delay:${i*.06}s" onclick="location.href='store.html?id=${s.id}'">
       <div class="c-hd">
         <div class="avatar" style="background:${CBG[s.category]||'#181818'};color:${CAC[s.category]||'#7a8c6e'}">${CEM[s.category]||'🏪'}</div>
         <div class="c-info"><h3>${s.name}</h3>
@@ -1118,10 +1118,10 @@ function setPlatform(p){
   platform=p;
   const ids = {ig:'pIG', web:'pWeb', both:'pBoth'};
   ['ig','web','both'].forEach(x=>{ const el=document.getElementById(ids[x]); if(el) el.classList.toggle('on',x===p); });
-  const fIG=document.getElementById('fIG');
-  const fWeb=document.getElementById('fWeb');
-  if(fIG) fIG.style.display=(p==='ig'||p==='both')?'block':'none';
-  if(fWeb) fWeb.style.display=(p==='web'||p==='both')?'block':'none';
+  const fIG  = document.getElementById('fIG');
+  const fWeb = document.getElementById('fWeb');
+  if(fIG)  fIG.style.display  =(p==='ig'||p==='both') ?'block':'none';
+  if(fWeb) fWeb.style.display =(p==='web'||p==='both')?'block':'none';
 }
 function openOv(id)  { document.getElementById(id).classList.add('open'); }
 function closeOv(id) { document.getElementById(id).classList.remove('open'); }
