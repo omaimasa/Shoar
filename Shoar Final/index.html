@@ -770,9 +770,16 @@ let resendInt   = null;
    AUTH — Phone OTP
    ══════════════════════════════════════════ */
 
-function requireAuth(cb) {
-  if (currentUser) { cb(); return; }
+async function requireAuth(cb) {
+  // تحقق من الجلسة الحالية دائماً
+  const { data: { session } } = await db.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    cb();
+    return;
+  }
   pendingCb = cb;
+  currentUser = null;
   goStep('stepPhone');
   openOv('ovAuth');
 }
@@ -896,7 +903,7 @@ function finishAuth(name) {
 function renderNav(name) {
   document.getElementById('navActs').innerHTML = `
     <div class="user-chip"><span class="online"></span>${name}</div>
-    <button class="btn btn-gold btn-sm" onclick="openReviewModal(null)">⭐ اكتب تقييم</button>
+    <button class="btn btn-gold btn-sm" onclick="requireAuth(()=>openReviewModal(null))">⭐ اكتب تقييم</button>
     <button class="btn-ghost" onclick="doLogout()">خروج</button>`;
 }
 
@@ -1002,7 +1009,7 @@ function renderGrid(data) {
         <div class="c-info"><h3>${s.name}</h3>
           <div class="c-meta"><span>${s.description||''}</span></div>
         </div>
-        ${s.verified?'<div class="vbadge">✓ موثّق</div>':''}
+        ${s.verified?'<div class="vbadge">★ موثّق</div>':''}
       </div>
       <div class="stars"><span class="rn">${r>0?r:'—'}</span>${starsHTML(r)}<span class="rc">(${toAr(rc)} تقييم)</span></div>
       <div class="bars">${barsHTML(s)}</div>
