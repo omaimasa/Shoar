@@ -126,7 +126,7 @@ textarea.inp{resize:vertical;min-height:80px;}
 <!-- Review Modal -->
 <div class="ov" id="ovReview">
   <div class="modal">
-    <div class="mhd"><div class="mt">✍️ اكتب تقييمك</div><button class="xb" onclick="closeOv('ovReview')">✕</button></div>
+    <div class="mhd"><div class="mt">كتابة تقييمك</div><button class="xb" onclick="closeOv('ovReview')">✕</button></div>
     <div class="fg"><label class="lb">التقييم الإجمالي</label>
       <div class="spr" id="starRow">
         <span class="sp" onclick="setStar(1)">★</span><span class="sp" onclick="setStar(2)">★</span>
@@ -142,7 +142,7 @@ textarea.inp{resize:vertical;min-height:80px;}
         <div class="asp"><div class="asl">💰 القيمة</div><div class="ass" data-k="value"><span class="as" onclick="setAsp('value',1)">★</span><span class="as" onclick="setAsp('value',2)">★</span><span class="as" onclick="setAsp('value',3)">★</span><span class="as" onclick="setAsp('value',4)">★</span><span class="as" onclick="setAsp('value',5)">★</span></div></div>
       </div>
     </div>
-    <div class="fg"><label class="lb">تجربتك بكلماتك</label><textarea class="inp" id="rvText" placeholder="شاركنا تجربتك الحقيقية..."></textarea></div>
+    <div class="fg"><label class="lb">تجربتك بكلماتك</label><textarea class="inp" id="rvText" placeholder="شاركنا تجربتك (اختياري)..."></textarea></div>
     <div class="fg"><label class="lb">الاسم المعروض</label><input type="text" class="inp" id="rvName" readonly style="opacity:.6;"></div>
     <button class="btn btn-em" style="width:100%;justify-content:center;padding:12px;" id="rvBtn" onclick="submitReview()">نشر التقييم 🚀</button>
   </div>
@@ -238,10 +238,11 @@ function renderNav(name) {
 }
 
 async function loadStore(id) {
-  const [{ data:store },{ data:reviews }] = await Promise.all([
+  const [{ data:store, error:storeErr },{ data:reviews }] = await Promise.all([
     db.from('stores_with_stats').select('*').eq('id',id).single(),
     db.from('reviews').select('*').eq('store_id',id).eq('status','approved').order('created_at',{ascending:false})
   ]);
+  if (storeErr) console.error('Store load error:', storeErr);
   if (!store){ document.getElementById('main').innerHTML='<div class="empty">المتجر غير موجود</div>'; return; }
   currentStore = store;
   document.title = store.name + ' — Shoar';
@@ -333,18 +334,21 @@ async function loadStore(id) {
 
     <div class="sec-title">
       <span>التقييمات (${toAr(rc)})</span>
-      <button class="btn btn-em" onclick="openReviewModal()">✍️ اكتب تقييم</button>
+      <button class="btn btn-em" onclick="openReviewModal()">كتابة تقييم</button>
     </div>
     ${reviewsHTML}
   `;
 }
 
 /* ── Review ── */
-function openReviewModal() {
-  if (!currentUser) {
+async function openReviewModal() {
+  const { data: { session } } = await db.auth.getSession();
+  if (!session?.user) {
+    currentUser = null;
     openOv('ovAuth');
     return;
   }
+  currentUser = session.user;
   curStar=0; aspects={};
   document.querySelectorAll('.sp,.as').forEach(s=>s.classList.remove('on'));
   document.getElementById('rvText').value='';
@@ -362,7 +366,6 @@ async function submitReview() {
   
   if (!curStar) return showToast('⚠️ اختر تقييماً من ١ إلى ٥','var(--rd)');
   const body = document.getElementById('rvText').value.trim();
-  if (!body) return showToast('⚠️ اكتب تجربتك','var(--rd)');
   const btn = document.getElementById('rvBtn');
   btn.disabled=true; btn.textContent='جاري النشر...';
   const {error} = await db.from('reviews').insert({
@@ -372,7 +375,7 @@ async function submitReview() {
     quality: aspects.quality||null,
     support: aspects.support||null,
     value: aspects.value||null,
-    body,
+    body: body || '—',
     author_name: document.getElementById('rvName').value||'مستخدم مجهول',
     user_id: currentUser.id,
     status: 'approved'
