@@ -299,7 +299,7 @@ async function loadStore(id) {
       <div style="flex:1;">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
           <div class="store-name">${store.name}</div>
-          ${store.verified?'<span class="vbadge">✓ موثّق</span>':''}
+          ${store.verified?'<span class="vbadge">★ موثّق</span>':''}
         </div>
         <div class="store-cat">${store.category}</div>
         <div class="store-links">
@@ -355,7 +355,11 @@ function openReviewModal() {
 }
 
 async function submitReview() {
-  if (!currentUser){ openOv('ovAuth'); return; }
+  // التحقق الصارم من تسجيل الدخول
+  const { data: { session } } = await db.auth.getSession();
+  if (!session) { closeOv('ovReview'); openOv('ovAuth'); return; }
+  currentUser = session.user;
+  
   if (!curStar) return showToast('⚠️ اختر تقييماً من ١ إلى ٥','var(--rd)');
   const body = document.getElementById('rvText').value.trim();
   if (!body) return showToast('⚠️ اكتب تجربتك','var(--rd)');
@@ -369,7 +373,7 @@ async function submitReview() {
     support: aspects.support||null,
     value: aspects.value||null,
     body,
-    author_name: document.getElementById('rvName').value,
+    author_name: document.getElementById('rvName').value||'مستخدم مجهول',
     user_id: currentUser.id,
     status: 'approved'
   });
