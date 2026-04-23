@@ -1401,11 +1401,15 @@ async function callAI(prompt) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SUPA_KEY}`
+      'Authorization': `Bearer ${SUPA_KEY}`,
+      'apikey': SUPA_KEY
     },
     body: JSON.stringify({ prompt })
   });
-  if (!res.ok) throw new Error(`Edge Function error: ${res.status}`);
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Edge Function ${res.status}: ${txt}`);
+  }
   return res.json();
 }
 const TRUST_TTL_DAYS = 7; // إعادة التحقق كل 7 أيام
