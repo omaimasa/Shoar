@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقييمات المتجر — Shoar</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#1a1a18;--sf:#222220;--sf2:#2a2a27;--bd:#333330;--bd2:#3d3d39;--em:#7a8c6e;--em-l:#96a886;--em-d:rgba(122,140,110,.13);--tx:#d4d0c8;--mu:#6e6b60;--dm:#3a3a36;--gr:#7a8c6e;--rd:#c0504a;--r:14px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;background-image:radial-gradient(circle,rgba(255,255,255,.03) 1px,transparent 1px);background-size:28px 28px;}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(26,26,24,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
+.back{font-size:13px;color:var(--mu);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s;}
+.back:hover{color:var(--em);}
+.container{max-width:900px;margin:0 auto;padding:40px 24px 80px;}
+
+/* Store Header */
+.store-header{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:28px;margin-bottom:24px;display:flex;gap:20px;align-items:flex-start;}
+.store-avatar{width:72px;height:72px;border-radius:16px;background:var(--sf2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.store-info{flex:1;}
+.store-name{font-size:24px;font-weight:700;margin-bottom:4px;}
+.store-cat{font-size:13px;color:var(--mu);margin-bottom:12px;}
+.store-links{display:flex;gap:8px;flex-wrap:wrap;}
+.store-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--mu);background:var(--sf2);padding:5px 12px;border-radius:7px;text-decoration:none;border:1px solid var(--bd);transition:all .2s;}
+.store-link:hover{color:var(--em);border-color:var(--em);}
+.vbadge{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--em);background:var(--em-d);padding:3px 10px;border-radius:100px;border:1px solid rgba(122,140,110,.3);}
+
+/* Score Summary */
+.score-grid{display:grid;grid-template-columns:auto 1fr;gap:24px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:24px;margin-bottom:24px;align-items:center;}
+.big-score{text-align:center;}
+.score-num{font-size:52px;font-weight:700;color:var(--em);line-height:1;}
+.score-stars{font-size:18px;color:var(--em);margin:4px 0;}
+.score-count{font-size:12px;color:var(--mu);}
+.bars-wrap{display:flex;flex-direction:column;gap:6px;}
+.bar-row{display:flex;align-items:center;gap:8px;font-size:12px;}
+.bar-label{color:var(--mu);min-width:24px;text-align:left;}
+.bar-track{flex:1;height:6px;background:var(--sf2);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--em);border-radius:3px;transition:width .8s ease;}
+.bar-pct{color:var(--mu);min-width:28px;text-align:left;}
+
+/* Aspects */
+.aspects{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+.asp-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px;text-align:center;}
+.asp-label{font-size:11px;color:var(--mu);margin-bottom:6px;}
+.asp-val{font-size:20px;font-weight:700;color:var(--em);}
+
+/* Trust Badge */
+.trust-section{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:24px;}
+.trust-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.trust-title{font-size:14px;font-weight:600;}
+.trust-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:500;}
+.tg{background:rgba(122,140,110,.15);color:#7a8c6e;border:1px solid rgba(122,140,110,.3);}
+.ty{background:rgba(181,147,58,.15);color:#b5933a;border:1px solid rgba(181,147,58,.3);}
+.tr{background:rgba(192,80,74,.15);color:#c0504a;border:1px solid rgba(192,80,74,.3);}
+.crit-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd);}
+.crit-row:last-child{border:none;}
+.crit-name{font-size:12px;color:var(--tx);flex:1;}
+.crit-note{font-size:10px;color:var(--mu);}
+.crit-bar{width:80px;height:4px;background:var(--sf2);border-radius:2px;overflow:hidden;}
+.crit-fill{height:100%;border-radius:2px;}
+.crit-val{font-size:10px;color:var(--mu);min-width:28px;}
+.ai-note{font-size:10px;color:var(--mu);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);}
+
+/* Reviews */
+.sec-title{font-size:16px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.btn-review{background:var(--em);color:#1a1a18;border:none;padding:9px 20px;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-review:hover{background:var(--em-l);}
+.review-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px;margin-bottom:12px;}
+.rev-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.rev-avatar{width:36px;height:36px;border-radius:50%;background:var(--sf2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--em);flex-shrink:0;}
+.rev-name{font-size:13px;font-weight:500;}
+.rev-date{font-size:11px;color:var(--mu);}
+.rev-stars{font-size:13px;color:var(--em);margin-right:auto;}
+.rev-body{font-size:13px;color:#a0a098;line-height:1.7;}
+.rev-aspects{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.rev-asp{font-size:10px;color:var(--mu);background:var(--sf2);padding:3px 8px;border-radius:5px;}
+.empty{text-align:center;padding:48px;color:var(--mu);font-size:14px;}
+.loader{text-align:center;padding:40px;color:var(--mu);}
+.spinner{width:28px;height:28px;border:2px solid var(--bd2);border-top-color:var(--em);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Desc */
+.store-desc{font-size:14px;color:var(--mu);line-height:1.7;padding:16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:24px;}
+
+@media(max-width:640px){
+  nav{padding:12px 16px;}
+  .container{padding:20px 16px 60px;}
+  .store-header{flex-direction:column;gap:14px;}
+  .score-grid{grid-template-columns:1fr;gap:16px;}
+  .aspects{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html"><img src="shoar-logo.png" alt="Shoar" style="height:30px;width:auto;display:block;"></a>
+  <a class="back" href="index.html">→ الرئيسية</a>
+</nav>
+
+<div class="container" id="main">
+  <div class="loader"><div class="spinner"></div>جاري التحميل...</div>
+</div>
+
+<script>
+const SUPA_URL = 'https://tmkxsgbmrhssxajflgdq.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRta3hzZ2Jtcmhzc3hhamZsZ2RxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjQyNTksImV4cCI6MjA5MjQ0MDI1OX0.bkYGlcOPYcvPJL6PlRbDSuRdnybG2pzyhTTeXgOjmJE';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+const CEM = {store:'م',product:'ن',service:'خ',specialist:'ا',other:'أ'};
+const CBG = {store:'#1a1a2e',product:'#1e2a1e',service:'#2a1e1e',specialist:'#1e1e2a',other:'#1e1e1e'};
+const CAC = {store:'#7a8c6e',product:'#4ade80',service:'#fb7185',specialist:'#818cf8',other:'#94a3b8'};
+
+function stars(n){ return '★'.repeat(Math.round(n||0)) + '☆'.repeat(5-Math.round(n||0)); }
+function toAr(n){ return String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
+function fmtDate(d){ return new Date(d).toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'}); }
+
+async function init() {
+  const id = new URLSearchParams(location.search).get('id');
+  if (!id) { location.href='index.html'; return; }
+
+  const [{ data: store }, { data: reviews }] = await Promise.all([
+    db.from('stores_with_stats').select('*').eq('id', id).single(),
+    db.from('reviews').select('*').eq('store_id', id).eq('status','approved').order('created_at',{ascending:false})
+  ]);
+
+  if (!store) { document.getElementById('main').innerHTML='<div class="empty">المتجر غير موجود</div>'; return; }
+  document.title = store.name + ' — Shoar';
+
+  const r = parseFloat(store.avg_rating)||0;
+  const rc = store.review_count||0;
+  const color = (store.trust_score||0) >= 75 ? '#7a8c6e' : (store.trust_score||0) >= 50 ? '#b5933a' : '#c0504a';
+  const tlabel = (store.trust_score||0) >= 75 ? 'موثوق' : (store.trust_score||0) >= 50 ? 'يحتاج تحقق' : 'غير موثوق';
+  const tclass = (store.trust_score||0) >= 75 ? 'tg' : (store.trust_score||0) >= 50 ? 'ty' : 'tr';
+
+  // Aspect averages from reviews
+  const asp = {delivery:0,quality:0,support:0,value:0};
+  if (reviews?.length) {
+    ['delivery','quality','support','value'].forEach(k=>{
+      const vals = reviews.filter(r=>r[k]).map(r=>r[k]);
+      asp[k] = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : 0;
+    });
+  }
+
+  const trustHTML = store.trust_score !== null && store.trust_score !== undefined ? `
+    <div class="trust-section">
+      <div class="trust-header">
+        <div class="trust-title">✦ تقرير المصداقية بالذكاء الاصطناعي</div>
+        <span class="trust-badge ${tclass}">● ${tlabel} ${store.trust_score}%</span>
+      </div>
+      ${(store.trust_data?.criteria||[]).map(c=>{
+        const pct=Math.round((c.score/c.weight)*100);
+        const bc=pct>=75?'#7a8c6e':pct>=40?'#b5933a':'#c0504a';
+        return `<div class="crit-row">
+          <div style="flex:1"><div class="crit-name">${c.name}</div><div class="crit-note">${c.note}</div></div>
+          <div class="crit-bar"><div class="crit-fill" style="width:${pct}%;background:${bc}"></div></div>
+          <span class="crit-val">${c.score}/${c.weight}</span>
+        </div>`;
+      }).join('')}
+      ${store.trust_data?.summary?`<div class="ai-note">💡 ${store.trust_data.summary}</div>`:''}
+      <div class="ai-note">يتجدد التقرير كل ٧ أيام · مدعوم بالذكاء الاصطناعي</div>
+    </div>` : '';
+
+  const reviewsHTML = reviews?.length ? reviews.map(rv=>`
+    <div class="review-card">
+      <div class="rev-head">
+        <div class="rev-avatar">${(rv.author_name||'م')[0]}</div>
+        <div>
+          <div class="rev-name">${rv.author_name||'مستخدم مجهول'}</div>
+          <div class="rev-date">${fmtDate(rv.created_at)}</div>
+        </div>
+        <div class="rev-stars">${stars(rv.rating)} ${rv.rating}/5</div>
+      </div>
+      <div class="rev-body">${rv.body}</div>
+      <div class="rev-aspects">
+        ${rv.delivery?`<span class="rev-asp">🚚 التوصيل ${rv.delivery}/5</span>`:''}
+        ${rv.quality?`<span class="rev-asp">📦 الجودة ${rv.quality}/5</span>`:''}
+        ${rv.support?`<span class="rev-asp">💬 الدعم ${rv.support}/5</span>`:''}
+        ${rv.value?`<span class="rev-asp">💰 القيمة ${rv.value}/5</span>`:''}
+      </div>
+    </div>`).join('') : '<div class="empty">لا توجد تقييمات بعد — كن أول من يقيّم!</div>';
+
+  document.getElementById('main').innerHTML = `
+    <div class="store-header">
+      <div class="store-avatar" style="background:${CBG[store.category]||'#222'};color:${CAC[store.category]||'#7a8c6e'}">${CEM[store.category]||'م'}</div>
+      <div class="store-info">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
+          <div class="store-name">${store.name}</div>
+          ${store.verified?'<span class="vbadge">✓ موثّق</span>':''}
+        </div>
+        <div class="store-cat">${store.category}</div>
+        <div class="store-links">
+          ${store.ig_handle?`<a class="store-link" href="https://instagram.com/${store.ig_handle.replace('@','')}" target="_blank">📸 ${store.ig_handle}</a>`:''}
+          ${store.website?`<a class="store-link" href="${store.website.startsWith('http')?store.website:'https://'+store.website}" target="_blank">🌐 الموقع</a>`:''}
+        </div>
+      </div>
+    </div>
+
+    <div class="score-grid">
+      <div class="big-score">
+        <div class="score-num">${r>0?r:'—'}</div>
+        <div class="score-stars">${r>0?stars(r):''}</div>
+        <div class="score-count">${toAr(rc)} تقييم</div>
+      </div>
+      <div class="bars-wrap">
+        ${[5,4,3,2,1].map(n=>`
+          <div class="bar-row">
+            <span class="bar-label">${n}★</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${store['pct_'+n]||0}%"></div></div>
+            <span class="bar-pct">${store['pct_'+n]||0}%</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    ${(asp.delivery||asp.quality||asp.support||asp.value) ? `
+    <div class="aspects">
+      ${asp.delivery?`<div class="asp-card"><div class="asp-label">🚚 التوصيل</div><div class="asp-val">${asp.delivery}</div></div>`:''}
+      ${asp.quality?`<div class="asp-card"><div class="asp-label">📦 الجودة</div><div class="asp-val">${asp.quality}</div></div>`:''}
+      ${asp.support?`<div class="asp-card"><div class="asp-label">💬 الدعم</div><div class="asp-val">${asp.support}</div></div>`:''}
+      ${asp.value?`<div class="asp-card"><div class="asp-label">💰 القيمة</div><div class="asp-val">${asp.value}</div></div>`:''}
+    </div>` : ''}
+
+    ${store.description?`<div class="store-desc">${store.description}</div>`:''}
+
+    ${trustHTML}
+
+    <div class="sec-title">
+      <span>التقييمات (${toAr(rc)})</span>
+      <button class="btn-review" onclick="location.href='index.html?review=${store.id}'">✍️ اكتب تقييم</button>
+    </div>
+    ${reviewsHTML}
+  `;
+}
+
+init();
+</script>
+</body>
+</html>
