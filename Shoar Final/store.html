@@ -155,8 +155,8 @@ textarea.inp{resize:vertical;min-height:80px;}
     <div class="auth-step active" id="stepPhone">
       <div class="mhd"><div></div><button class="xb" onclick="closeOv('ovAuth')">✕</button></div>
       <div class="auth-icon">📱</div>
-      <div class="auth-title">سجّل دخولك</div>
-      <div class="auth-sub">للكتابة تقييم حقيقي تحتاج تسجيل جوالك</div>
+      <div class="auth-title">تحقق برقم جوالك</div>
+      <div class="auth-sub">سيصلك رمز التحقق برسالة SMS</div>
       <div class="fg">
         <div class="phone-row">
           <input type="tel" class="code-inp" id="dialCode" value="+966" maxlength="5">
@@ -170,7 +170,7 @@ textarea.inp{resize:vertical;min-height:80px;}
       <div class="mhd"><button class="btn-out btn" style="padding:5px 10px;font-size:12px;" onclick="goStep('stepPhone')">← رجوع</button><button class="xb" onclick="closeOv('ovAuth')">✕</button></div>
       <div class="auth-icon">🔐</div>
       <div class="auth-title">رمز التحقق</div>
-      <div class="auth-sub" id="otpSub">أُرسل رمز إلى جوالك</div>
+      <div class="auth-sub" id="otpSub">أُرسل رمز SMS إلى جوالك</div>
       <div class="otp-row">
         <input class="otp-b" id="d1" type="tel" maxlength="1" oninput="otpIn(this,'d2')" onkeydown="otpDel(event,this,'')">
         <input class="otp-b" id="d2" type="tel" maxlength="1" oninput="otpIn(this,'d3')" onkeydown="otpDel(event,this,'d1')">
@@ -399,7 +399,7 @@ async function sendOTP(){
   document.getElementById('phoneErr').style.display='none';
   otpPhone=code+local;
   const btn=document.getElementById('sendBtn'); btn.disabled=true; btn.textContent='جاري الإرسال...';
-  const {error}=await db.auth.signInWithOtp({phone:otpPhone});
+  const {error}=await db.auth.signInWithOtp({phone:otpPhone, options:{channel:'sms'}});
   btn.disabled=false; btn.textContent='إرسال رمز التحقق';
   if(error){document.getElementById('phoneErr').textContent='تعذّر الإرسال';document.getElementById('phoneErr').style.display='block';return;}
   document.getElementById('otpSub').textContent=`أُرسل رمز إلى ${otpPhone}`;
@@ -425,7 +425,7 @@ async function verifyOTP(){
   else{finishAuth(profile.display_name);}
 }
 
-async function resendOTP(){await db.auth.signInWithOtp({phone:otpPhone});['d1','d2','d3','d4','d5','d6'].forEach(id=>{const el=document.getElementById(id);el.value='';el.classList.remove('done');});document.getElementById('d1').focus();startTimer();showToast('📨 تم إعادة إرسال الرمز');}
+async function resendOTP(){await db.auth.signInWithOtp({phone:otpPhone, options:{channel:'sms'}});['d1','d2','d3','d4','d5','d6'].forEach(id=>{const el=document.getElementById(id);el.value='';el.classList.remove('done');});document.getElementById('d1').focus();startTimer();showToast('📨 تم إعادة إرسال الرمز');}
 function startTimer(){let s=60;const row=document.getElementById('resendRow');row.innerHTML=`إعادة الإرسال بعد <span id="timerN" style="color:var(--em);font-weight:600;">${s}</span> ثانية`;clearInterval(resendInt);resendInt=setInterval(()=>{s--;const n=document.getElementById('timerN');if(n)n.textContent=s;if(s<=0){clearInterval(resendInt);row.innerHTML=`<button class="resend-btn" onclick="resendOTP()">إعادة إرسال الرمز</button>`;}},1000);}
 
 async function saveName(skip=false){
