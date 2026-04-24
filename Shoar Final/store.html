@@ -159,8 +159,8 @@ textarea.inp{resize:vertical;min-height:80px;}
       <div class="auth-sub">سيصلك رمز التحقق برسالة SMS</div>
       <div class="fg">
         <div class="phone-row">
-          <input type="tel" class="code-inp" id="dialCode" value="+966" maxlength="5">
-          <input type="tel" class="inp" id="phoneNum" placeholder="05xxxxxxxx" maxlength="10" style="direction:ltr;" onkeydown="if(event.key==='Enter')sendOTP()">
+          <input type="tel" class="code-inp" id="dialCode" value="+966" style="direction:ltr;" maxlength="5">
+          <input type="tel" class="inp" id="phoneNum" placeholder="05xxxxxxxx" maxlength="10" style="direction:ltr;text-align:right;" style="direction:ltr;" onkeydown="if(event.key==='Enter')sendOTP()">
         </div>
         <div class="err-msg" id="phoneErr" style="display:none;"></div>
       </div>
@@ -172,7 +172,7 @@ textarea.inp{resize:vertical;min-height:80px;}
       <div class="auth-title">رمز التحقق</div>
       <div class="auth-sub" id="otpSub">أُرسل رمز SMS إلى جوالك</div>
       <div class="otp-row">
-        <input class="otp-b" id="d1" type="tel" maxlength="1" oninput="otpIn(this,'d2')" onkeydown="otpDel(event,this,'')">
+        <input class="otp-b" id="d1" style="direction:ltr;" type="tel" maxlength="1" oninput="otpIn(this,'d2')" onkeydown="otpDel(event,this,'')">
         <input class="otp-b" id="d2" type="tel" maxlength="1" oninput="otpIn(this,'d3')" onkeydown="otpDel(event,this,'d1')">
         <input class="otp-b" id="d3" type="tel" maxlength="1" oninput="otpIn(this,'d4')" onkeydown="otpDel(event,this,'d2')">
         <input class="otp-b" id="d4" type="tel" maxlength="1" oninput="otpIn(this,'d5')" onkeydown="otpDel(event,this,'d3')">
@@ -397,8 +397,7 @@ async function sendOTP(){
   const local=document.getElementById('phoneNum').value.trim().replace(/^0/,'');
   if(!local||local.length<9){document.getElementById('phoneErr').textContent='رقم غير صحيح';document.getElementById('phoneErr').style.display='block';return;}
   document.getElementById('phoneErr').style.display='none';
-  otpPhone=(code+local).replace(/\s+/g,'').replace(/^\+/,'');
-  otpPhone = '+' + otpPhone;
+
   const btn=document.getElementById('sendBtn'); btn.disabled=true; btn.textContent='جاري الإرسال...';
   console.log('Sending OTP to:', otpPhone);
   const {error}=await db.auth.signInWithOtp({phone:otpPhone});
