@@ -255,6 +255,8 @@ async function loadStore(id) {
   
   // Dynamic SEO meta tags
   const desc = `اقرأ ${store.review_count||0} تقييم حقيقي لـ ${store.name}. متوسط التقييم ${store.avg_rating||0}/5 ⭐ — Shoar منصة التقييمات السعودية`;
+  // Include store's custom keywords in SEO
+  const storeKw = store.keywords ? store.keywords.split(',').map(k=>k.trim()) : [];
   const keywords = [
     store.name,
     `تقييم ${store.name}`,
@@ -263,6 +265,7 @@ async function loadStore(id) {
     `${store.name} سعودي`,
     store.category,
     `أفضل ${store.category} سعودي`,
+    ...storeKw,
     'تقييمات متاجر سعودية',
     'Shoar'
   ].join(', ');
@@ -361,6 +364,7 @@ async function loadStore(id) {
     </div>`:''}
 
     ${store.description?`<div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:20px;font-size:14px;color:var(--mu);line-height:1.7;">${store.description}</div>`:''}
+    ${store.keywords ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;">${store.keywords.split(',').map(k=>`<span style="font-size:12px;background:var(--em-d);color:var(--em);padding:4px 12px;border-radius:100px;border:1px solid rgba(122,140,110,.3);">${k.trim()}</span>`).join('')}</div>` : ''}
 
     ${trustHTML}
 
