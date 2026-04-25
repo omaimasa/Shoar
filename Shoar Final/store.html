@@ -456,6 +456,19 @@ function finishAuth(name){
 function goStep(id){document.querySelectorAll('.auth-step').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
+/* ── Auth State Listener ── */
+db.auth.onAuthStateChange(async (event, session) => {
+  if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
+    currentUser = session.user;
+    const { data: p } = await db.from('profiles').select('display_name').eq('id', currentUser.id).single();
+    const name = p?.display_name || 'مستخدم';
+    if (typeof renderNav === 'function') renderNav(name);
+    closeOv('ovAuth');
+    if (typeof pendingCb === 'function' && pendingCb) { const cb = pendingCb; pendingCb = null; cb(); }
+  }
+});
+
+
 init();
 </script>
 </body>
