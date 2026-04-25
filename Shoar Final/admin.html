@@ -460,11 +460,7 @@ async function updateStoreStatus(id, status) {
   const updateData = { status, admin_note: note };
   const iconUrl = document.getElementById('iconUrl')?.value?.trim();
   if (iconUrl) updateData.icon_url = iconUrl;
-  // احفظ الكلمات المفتاحية فقط إذا كان المودال مفتوح لنفس المتجر
-  const kwField = document.getElementById('storeKeywords');
-  if (kwField && selectedStoreId === id) {
-    updateData.keywords = kwField.value.trim();
-  }
+  
   const { error } = await db.from('stores').update(updateData).eq('id', id);
   if (error) return showToast('❌ خطأ في التحديث','var(--rd)');
   showToast(status==='approved' ? '✅ تم اعتماد المتجر' : '❌ تم رفض المتجر', status==='approved'?'var(--gr)':'var(--rd)');
