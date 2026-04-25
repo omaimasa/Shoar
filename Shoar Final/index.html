@@ -1078,7 +1078,7 @@ async function submitReview() {
   const text = document.getElementById('rvText').value.trim();
   if (!sid)     return showToast('⚠️ اختر متجراً','var(--rd)');
   if (!curStar) return showToast('⚠️ اختر تقييماً بالنجوم','var(--rd)');
-  if (!text)    return showToast('⚠️ اكتب تجربتك أولاً','var(--rd)');
+  // النص اختياري — لا يشترط الكتابة
 
   const btn = document.getElementById('rvBtn');
   btn.disabled=true; btn.textContent='جاري النشر...';
@@ -1087,7 +1087,7 @@ async function submitReview() {
     store_id:    sid, rating: curStar,
     delivery:    aspects.delivery||null, quality: aspects.quality||null,
     support:     aspects.support||null,  value:   aspects.value||null,
-    body:        text,
+    body:        text || '',
     author_name: document.getElementById('rvName').value || 'مستخدم مجهول',
     user_id:     currentUser?.id || null, status: 'approved'
   });
