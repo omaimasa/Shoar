@@ -236,9 +236,10 @@ textarea.inp{resize:vertical;min-height:72px;}
       <label class="lb">ملاحظة (اختيارية للمتجر)</label>
       <textarea class="inp" id="adminNote" placeholder="سبب الرفض أو ملاحظة للمتجر..."></textarea>
     </div>
-    <div style="display:flex;gap:10px;margin-top:4px;">
+    <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
       <button class="btn btn-gr" style="flex:1;justify-content:center;" onclick="approveStore()">✅ اعتماد</button>
       <button class="btn btn-rd" style="flex:1;justify-content:center;" onclick="rejectStore()">❌ رفض</button>
+      <button class="btn" style="width:100%;justify-content:center;margin-top:4px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx);" onclick="saveStoreDetails()">💾 حفظ التفاصيل فقط</button>
     </div>
   </div>
 </div>
@@ -459,12 +460,38 @@ async function updateStoreStatus(id, status) {
   const updateData = { status, admin_note: note };
   const iconUrl = document.getElementById('iconUrl')?.value?.trim();
   if (iconUrl) updateData.icon_url = iconUrl;
-  const keywords = document.getElementById('storeKeywords')?.value?.trim();
-  if (keywords !== undefined) updateData.keywords = keywords;
+  // احفظ الكلمات المفتاحية فقط إذا كان المودال مفتوح لنفس المتجر
+  const kwField = document.getElementById('storeKeywords');
+  if (kwField && selectedStoreId === id) {
+    updateData.keywords = kwField.value.trim();
+  }
   const { error } = await db.from('stores').update(updateData).eq('id', id);
   if (error) return showToast('❌ خطأ في التحديث','var(--rd)');
   showToast(status==='approved' ? '✅ تم اعتماد المتجر' : '❌ تم رفض المتجر', status==='approved'?'var(--gr)':'var(--rd)');
   loadStores(); loadStats();
+}
+
+async function saveStoreDetails() {
+  if (!selectedStoreId) return;
+  const updateData = {};
+  const note     = document.getElementById('adminNote')?.value;
+  const iconUrl  = document.getElementById('iconUrl')?.value?.trim();
+  const keywords = document.getElementById('storeKeywords')?.value?.trim();
+  if (note     !== undefined) updateData.admin_note = note;
+  if (iconUrl  !== undefined) updateData.icon_url   = iconUrl;
+  if (keywords !== undefined) updateData.keywords   = keywords;
+
+  const { error } = await db.from('stores').update(updateData).eq('id', selectedStoreId);
+  if (error) return showToast('❌ خطأ في الحفظ', 'var(--rd)');
+  
+  // Update local store data
+  const idx = allStores.findIndex(s => s.id === selectedStoreId);
+  if (idx > -1) {
+    allStores[idx].keywords  = keywords;
+    allStores[idx].icon_url  = iconUrl;
+    allStores[idx].admin_note = note;
+  }
+  showToast('✅ تم حفظ التفاصيل', 'var(--gr)');
 }
 
 async function toggleVerified(id, val) {
