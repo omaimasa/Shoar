@@ -55,6 +55,18 @@ footer a{color:var(--em);text-decoration:none;}
   <h1 id="mainHeading">اكتشف أفضل المتاجر</h1>
   <p class="sub" id="mainSub">تقييمات حقيقية من مستخدمين سعوديين — ابحث عن أفضل المتاجر في كل فئة</p>
 
+  <!-- صندوق البحث بالكلمات المفتاحية -->
+  <div style="display:flex;gap:10px;margin-bottom:20px;">
+    <div style="flex:1;display:flex;align-items:center;gap:10px;background:var(--sf);border:1.5px solid var(--bd2);border-radius:12px;padding:10px 16px;transition:border-color .2s;" id="searchWrap">
+      <span style="color:var(--mu);font-size:16px;">🔍</span>
+      <input type="text" id="kwSearch" placeholder="ابحث بكلمة مفتاحية مثل: عطور، ملابس، تقنية..."
+        style="flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:inherit;font-size:14px;direction:rtl;"
+        oninput="filterStores()" onfocus="document.getElementById('searchWrap').style.borderColor='var(--em)'"
+        onblur="document.getElementById('searchWrap').style.borderColor='var(--bd2)'">
+      <button id="clearBtn" onclick="clearSearch()" style="display:none;background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px;padding:0;">✕</button>
+    </div>
+  </div>
+
   <div class="cats-nav">
     <a class="cat-btn active" href="category.html">الكل</a>
     <a class="cat-btn" href="category.html?cat=store">متاجر</a>
@@ -140,16 +152,65 @@ async function init() {
     return;
   }
 
+  // Store all data globally for filtering
+  window.allCatStores = stores;
+  window.activeFilter = cat || 'all';
+  renderCatGrid(stores);
+}
+
+function clearSearch() {
+  document.getElementById('kwSearch').value = '';
+  document.getElementById('clearBtn').style.display = 'none';
+  filterStores();
+}
+
+function filterStores() {
+  const q = document.getElementById('kwSearch').value.trim().toLowerCase();
+  document.getElementById('clearBtn').style.display = q ? 'block' : 'none';
+  
+  if (!q) {
+    renderCatGrid(window.allCatStores);
+    return;
+  }
+  
+  const filtered = (window.allCatStores || []).filter(s => {
+    const searchIn = [
+      s.name,
+      s.description,
+      s.keywords,
+      s.category
+    ].filter(Boolean).join(' ').toLowerCase();
+    return searchIn.includes(q);
+  });
+  
+  renderCatGrid(filtered, q);
+}
+
+function renderCatGrid(stores, query = '') {
+  const grid = document.getElementById('grid');
+  document.getElementById('loader').style.display = 'none';
+  grid.style.display = 'grid';
+
+  if (!stores?.length) {
+    grid.innerHTML = query 
+      ? `<div class="empty">لا توجد نتائج لـ "<strong>${query}</strong>"<br><span style="font-size:12px;margin-top:8px;display:block;">جرّب كلمة أخرى</span></div>`
+      : '<div class="empty">لا توجد متاجر في هذه الفئة بعد</div>';
+    return;
+  }
+
   grid.innerHTML = stores.map(s => {
     const r = parseFloat(s.avg_rating)||0;
     const rc = s.review_count||0;
     const ts = s.trust_score;
     const tdot = ts>=75?'tg':ts>=50?'ty':ts!==null&&ts!==undefined?'tr':'tn';
+    // Highlight keyword match
+    const kw = s.keywords ? s.keywords.split(',').map(k=>k.trim()).filter(Boolean) : [];
+    const kwHTML = kw.length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;">${kw.slice(0,4).map(k=>`<span style="font-size:10px;background:var(--em-d);color:var(--em);padding:2px 7px;border-radius:4px;">${k}</span>`).join('')}</div>` : '';
     return `
     <a class="card" href="../store.html?id=${s.id}">
       <div class="card-top">
         <div class="avatar" style="background:${s.icon_url?'transparent':CBG[s.category]||'#222'};color:${CAC[s.category]||'#7a8c6e'}">
-          ${s.icon_url ? `<img src="${s.icon_url}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.style.display='none'">` : (CEM[s.category]||'م')}
+          ${s.icon_url ? '<img src="'+s.icon_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.style.display=\'none\'">' : (CEM[s.category]||'م')}
         </div>
         <div>
           <div class="store-name">${s.name}</div>
@@ -162,6 +223,7 @@ async function init() {
         <span class="avg">${r>0?r:'—'}</span>
         <span class="cnt">(${rc} تقييم)</span>
       </div>
+      ${kwHTML}
     </a>`;
   }).join('');
 }
