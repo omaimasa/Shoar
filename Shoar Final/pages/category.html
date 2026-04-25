@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="catTitle">أفضل المتاجر — Shoar</title>
+<meta name="description" id="catDesc" content="اكتشف أفضل المتاجر السعودية مع تقييمات حقيقية">
+<meta name="keywords" id="catKeywords" content="أفضل متاجر سعودية, تقييمات, Shoar">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5301740696965181" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#1a1a18;--sf:#222220;--sf2:#2a2a27;--bd:#333330;--bd2:#3d3d39;--em:#7a8c6e;--em-l:#96a886;--em-d:rgba(122,140,110,.13);--tx:#d4d0c8;--mu:#6e6b60;--r:14px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;background-image:radial-gradient(circle,rgba(255,255,255,.03) 1px,transparent 1px);background-size:28px 28px;}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(26,26,24,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
+.back{font-size:13px;color:var(--mu);text-decoration:none;transition:color .2s;}.back:hover{color:var(--em);}
+.container{max-width:1100px;margin:0 auto;padding:40px 24px 80px;}
+h1{font-size:28px;font-weight:700;margin-bottom:8px;}
+.sub{font-size:14px;color:var(--mu);margin-bottom:32px;line-height:1.7;}
+.cats-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.cat-btn{padding:7px 16px;border-radius:100px;font-size:13px;border:1px solid var(--bd2);background:var(--sf);color:var(--mu);cursor:pointer;text-decoration:none;transition:all .2s;}
+.cat-btn:hover,.cat-btn.active{border-color:var(--em);color:var(--em);background:var(--em-d);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px;cursor:pointer;transition:border-color .2s,transform .2s;text-decoration:none;display:block;}
+.card:hover{border-color:var(--em);transform:translateY(-2px);}
+.card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.avatar{width:44px;height:44px;border-radius:10px;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;flex-shrink:0;}
+.store-name{font-size:15px;font-weight:600;color:var(--tx);}
+.store-cat{font-size:11px;color:var(--mu);margin-top:2px;}
+.rating-row{display:flex;align-items:center;gap:8px;}
+.stars{color:var(--em);font-size:13px;}
+.avg{font-size:14px;font-weight:600;color:var(--em);}
+.cnt{font-size:11px;color:var(--mu);}
+.trust-dot{width:7px;height:7px;border-radius:50%;margin-right:auto;}
+.tg{background:#7a8c6e;}.ty{background:#b5933a;}.tr{background:#c0504a;}.tn{background:var(--bd2);}
+.empty{text-align:center;padding:60px;color:var(--mu);}
+.loader{text-align:center;padding:60px;color:var(--mu);}
+.spinner{width:28px;height:28px;border:2px solid var(--bd2);border-top-color:var(--em);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.seo-text{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:28px;font-size:13px;color:var(--mu);line-height:1.8;}
+.seo-text h2{font-size:16px;color:var(--tx);margin-bottom:8px;}
+footer{text-align:center;padding:32px;border-top:1px solid var(--bd);font-size:12px;color:var(--mu);}
+footer a{color:var(--em);text-decoration:none;}
+@media(max-width:640px){nav,'.container'{padding-right:20px;padding-left:20px;}.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../index.html"><img src="../shoar-logo.png" alt="Shoar" style="height:30px;width:auto;display:block;"></a>
+  <a class="back" href="../index.html">→ الرئيسية</a>
+</nav>
+
+<div class="container">
+  <h1 id="mainHeading">اكتشف أفضل المتاجر</h1>
+  <p class="sub" id="mainSub">تقييمات حقيقية من مستخدمين سعوديين — ابحث عن أفضل المتاجر في كل فئة</p>
+
+  <div class="cats-nav">
+    <a class="cat-btn active" href="category.html">الكل</a>
+    <a class="cat-btn" href="category.html?cat=store">متاجر</a>
+    <a class="cat-btn" href="category.html?cat=product">منتجات</a>
+    <a class="cat-btn" href="category.html?cat=service">مزودو خدمة</a>
+    <a class="cat-btn" href="category.html?cat=specialist">اختصاصيون</a>
+    <a class="cat-btn" href="category.html?cat=other">أخرى</a>
+  </div>
+
+  <div id="seoBlock" class="seo-text" style="display:none;"></div>
+
+  <div class="loader" id="loader"><div class="spinner"></div>جاري التحميل...</div>
+  <div class="grid" id="grid" style="display:none;"></div>
+</div>
+
+<footer>
+  <p>© ٢٠٢٥ <a href="../index.html">Shoar</a> · <a href="privacy.html">الخصوصية</a> · <a href="terms.html">الشروط</a></p>
+</footer>
+
+<script>
+const SUPA_URL = 'https://tmkxsgbmrhssxajflgdq.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRta3hzZ2Jtcmhzc3hhamZsZ2RxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjQyNTksImV4cCI6MjA5MjQ0MDI1OX0.bkYGlcOPYcvPJL6PlRbDSuRdnybG2pzyhTTeXgOjmJE';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+const CAT_LABELS = {
+  store:'متاجر', product:'منتجات', service:'مزودو خدمة',
+  specialist:'اختصاصيون', other:'أخرى'
+};
+const CAT_SEO = {
+  store:  { h:'أفضل المتاجر السعودية', desc:'اكتشف أفضل المتاجر الإلكترونية السعودية مع تقييمات حقيقية من مستخدمين فعليين. قارن التقييمات واختر المتجر المناسب لك.' },
+  product:{ h:'أفضل المنتجات في السعودية', desc:'تقييمات حقيقية لأفضل المنتجات السعودية. اعرف رأي المستخدمين قبل الشراء.' },
+  service:{ h:'أفضل مزودي الخدمة في السعودية', desc:'ابحث عن مزودي الخدمة الموثوقين في السعودية مع تقييمات حقيقية.' },
+  specialist:{ h:'أفضل الاختصاصيين في السعودية', desc:'اعثر على الاختصاصي المناسب مع تقييمات من عملاء حقيقيين.' },
+  other:  { h:'متاجر وخدمات متنوعة', desc:'تقييمات لمتاجر وخدمات متنوعة في السعودية.' },
+};
+const CBG={store:'#1a1a2e',product:'#1e2a1e',service:'#2a1e1e',specialist:'#1e1e2a',other:'#1e1e1e'};
+const CAC={store:'#7a8c6e',product:'#4ade80',service:'#fb7185',specialist:'#818cf8',other:'#94a3b8'};
+const CEM={store:'م',product:'ن',service:'خ',specialist:'ا',other:'أ'};
+
+const cat = new URLSearchParams(location.search).get('cat');
+
+async function init() {
+  // Update SEO
+  if (cat && CAT_SEO[cat]) {
+    const s = CAT_SEO[cat];
+    document.getElementById('mainHeading').textContent = s.h;
+    document.getElementById('mainSub').textContent = s.desc;
+    document.title = s.h + ' | Shoar';
+    document.getElementById('catTitle').textContent = document.title;
+    document.getElementById('catDesc').setAttribute('content', s.desc);
+    document.getElementById('catKeywords').setAttribute('content',
+      `${s.h}, ${CAT_LABELS[cat]}, تقييمات سعودية, Shoar, أفضل ${CAT_LABELS[cat]} سعودي`);
+
+    document.getElementById('seoBlock').style.display = 'block';
+    document.getElementById('seoBlock').innerHTML = `
+      <h2>${s.h} — دليل شامل</h2>
+      <p>${s.desc} تجد في Shoar تقييمات موثّقة تساعدك تتخذ قرار شراء ذكي بثقة تامة.</p>`;
+
+    // Mark active cat button
+    document.querySelectorAll('.cat-btn').forEach(b => {
+      b.classList.toggle('active', b.href.includes('cat=' + cat));
+    });
+    document.querySelector('.cat-btn').classList.remove('active');
+  }
+
+  // Fetch stores
+  let query = db.from('stores_with_stats')
+    .select('*').eq('status','approved')
+    .order('avg_rating', {ascending: false})
+    .order('review_count', {ascending: false});
+
+  if (cat) query = query.eq('category', cat);
+
+  const { data: stores, error } = await query.limit(50);
+
+  document.getElementById('loader').style.display = 'none';
+  const grid = document.getElementById('grid');
+  grid.style.display = 'grid';
+
+  if (!stores?.length) {
+    grid.innerHTML = '<div class="empty">لا توجد متاجر في هذه الفئة بعد</div>';
+    return;
+  }
+
+  grid.innerHTML = stores.map(s => {
+    const r = parseFloat(s.avg_rating)||0;
+    const rc = s.review_count||0;
+    const ts = s.trust_score;
+    const tdot = ts>=75?'tg':ts>=50?'ty':ts!==null&&ts!==undefined?'tr':'tn';
+    return `
+    <a class="card" href="../store.html?id=${s.id}">
+      <div class="card-top">
+        <div class="avatar" style="background:${s.icon_url?'transparent':CBG[s.category]||'#222'};color:${CAC[s.category]||'#7a8c6e'}">
+          ${s.icon_url ? `<img src="${s.icon_url}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.style.display='none'">` : (CEM[s.category]||'م')}
+        </div>
+        <div>
+          <div class="store-name">${s.name}</div>
+          <div class="store-cat">${CAT_LABELS[s.category]||s.category}</div>
+        </div>
+        <div class="trust-dot ${tdot}" title="${ts!==null&&ts!==undefined?'مصداقية '+ts+'%':'لم يُحلَّل'}"></div>
+      </div>
+      <div class="rating-row">
+        <span class="stars">${'★'.repeat(Math.round(r))}${'☆'.repeat(5-Math.round(r))}</span>
+        <span class="avg">${r>0?r:'—'}</span>
+        <span class="cnt">(${rc} تقييم)</span>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+init();
+</script>
+</body>
+</html>
