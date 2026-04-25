@@ -1003,7 +1003,7 @@ function renderGrid(data) {
     html += `
     <div class="card fi" style="animation-delay:${i*.06}s" onclick="location.href='store.html?id=${s.id}'">
       <div class="c-hd">
-        <div class="avatar" style="background:${CBG[s.category]||'#181818'};color:${CAC[s.category]||'#7a8c6e'};overflow:hidden;padding:${s.icon_url?'0':''};">
+        <div class="avatar" style="background:${s.icon_url?'transparent':CBG[s.category]||'#181818'};color:${CAC[s.category]||'#7a8c6e'};overflow:hidden;padding:0;">
           ${s.icon_url ? '<img src="' + s.icon_url + '" style="width:100%;height:100%;object-fit:cover;border-radius:11px;" onerror="this.style.display=\'none\'">' : (CEM[s.category]||'م')}
         </div>
         <div class="c-info"><h3>${s.name}</h3>
