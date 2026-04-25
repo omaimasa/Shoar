@@ -213,6 +213,13 @@ textarea.inp{resize:vertical;min-height:72px;}
     </div>
     <div id="mStoreDetails"></div>
 
+    <!-- كلمات مفتاحية -->
+    <div class="fg" style="margin-top:14px;">
+      <label class="lb">كلمات مفتاحية (للبحث والـ SEO)</label>
+      <input type="text" class="inp" id="storeKeywords" placeholder="مثل: عطور، عود، بخور، هدايا، فاخر" style="font-size:13px;">
+      <div style="font-size:11px;color:var(--mu);margin-top:4px;">افصل بين الكلمات بفاصلة — تساعد في اكتشاف المتجر عبر البحث</div>
+    </div>
+
     <!-- أيقونة المتجر -->
     <div class="fg" style="margin-top:14px;">
       <label class="lb">أيقونة المتجر (اختيارية)</label>
@@ -452,6 +459,8 @@ async function updateStoreStatus(id, status) {
   const updateData = { status, admin_note: note };
   const iconUrl = document.getElementById('iconUrl')?.value?.trim();
   if (iconUrl) updateData.icon_url = iconUrl;
+  const keywords = document.getElementById('storeKeywords')?.value?.trim();
+  if (keywords !== undefined) updateData.keywords = keywords;
   const { error } = await db.from('stores').update(updateData).eq('id', id);
   if (error) return showToast('❌ خطأ في التحديث','var(--rd)');
   showToast(status==='approved' ? '✅ تم اعتماد المتجر' : '❌ تم رفض المتجر', status==='approved'?'var(--gr)':'var(--rd)');
