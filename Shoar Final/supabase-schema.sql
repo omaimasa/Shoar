@@ -93,3 +93,6 @@ CREATE POLICY "public insert reviews"        ON reviews FOR INSERT WITH CHECK (t
 CREATE POLICY "public read display_name"     ON profiles FOR SELECT USING (true);
 CREATE POLICY "owner insert profile"         ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "owner update profile"         ON profiles FOR UPDATE USING (auth.uid() = id);
+
+-- أضف عمود أيقونة المتجر
+ALTER TABLE stores ADD COLUMN IF NOT EXISTS icon_url text;

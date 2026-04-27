@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<link rel="canonical" href="https://shoar.com.sa/pages/category.html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="catTitle">أفضل المتاجر — Shoar</title>
 <meta name="description" id="catDesc" content="اكتشف أفضل المتاجر السعودية مع تقييمات حقيقية">
@@ -10,9 +11,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5301740696965181" crossorigin="anonymous"></script>
 <style>
-:root{--bg:#1a1a18;--sf:#222220;--sf2:#2a2a27;--bd:#333330;--bd2:#3d3d39;--em:#7a8c6e;--em-l:#96a886;--em-d:rgba(122,140,110,.13);--tx:#d4d0c8;--mu:#6e6b60;--r:14px;}
+:root{--bg:#0f1117;--sf:#161a24;--sf2:#1d2130;--bd:#252a38;--bd2:#2e3445;--em:#10b981;--em-l:#34d399;--em-d:rgba(16,185,129,.13);--tx:#e2e8f0;--mu:#64748b;--r:14px;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;background-image:radial-gradient(circle,rgba(255,255,255,.03) 1px,transparent 1px);background-size:28px 28px;}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;background-image:radial-gradient(circle,rgba(255,255,255,.04) 1px,transparent 1px);background-size:28px 28px;}
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(26,26,24,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
 .back{font-size:13px;color:var(--mu);text-decoration:none;transition:color .2s;}.back:hover{color:var(--em);}
 .container{max-width:1100px;margin:0 auto;padding:40px 24px 80px;}
@@ -33,7 +34,7 @@ h1{font-size:28px;font-weight:700;margin-bottom:8px;}
 .avg{font-size:14px;font-weight:600;color:var(--em);}
 .cnt{font-size:11px;color:var(--mu);}
 .trust-dot{width:7px;height:7px;border-radius:50%;margin-right:auto;}
-.tg{background:#7a8c6e;}.ty{background:#b5933a;}.tr{background:#c0504a;}.tn{background:var(--bd2);}
+.tg{background:#10b981;}.ty{background:#f59e0b;}.tr{background:#f43f5e;}.tn{background:var(--bd2);}
 .empty{text-align:center;padding:60px;color:var(--mu);}
 .loader{text-align:center;padding:60px;color:var(--mu);}
 .spinner{width:28px;height:28px;border:2px solid var(--bd2);border-top-color:var(--em);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
@@ -104,7 +105,7 @@ const CAT_SEO = {
   other:  { h:'متاجر وخدمات متنوعة', desc:'تقييمات لمتاجر وخدمات متنوعة في السعودية.' },
 };
 const CBG={store:'#1a1a2e',product:'#1e2a1e',service:'#2a1e1e',specialist:'#1e1e2a',other:'#1e1e1e'};
-const CAC={store:'#7a8c6e',product:'#4ade80',service:'#fb7185',specialist:'#818cf8',other:'#94a3b8'};
+const CAC={store:'#10b981',product:'#4ade80',service:'#fb7185',specialist:'#818cf8',other:'#94a3b8'};
 const CEM={store:'م',product:'ن',service:'خ',specialist:'ا',other:'أ'};
 
 const cat = new URLSearchParams(location.search).get('cat');
@@ -209,7 +210,7 @@ function renderCatGrid(stores, query = '') {
     return `
     <a class="card" href="../store.html?id=${s.id}">
       <div class="card-top">
-        <div class="avatar" style="background:${s.icon_url?'transparent':CBG[s.category]||'#222'};color:${CAC[s.category]||'#7a8c6e'}">
+        <div class="avatar" style="background:${s.icon_url?'transparent':CBG[s.category]||'#222'};color:${CAC[s.category]||'#10b981'}">
           ${s.icon_url ? '<img src="'+s.icon_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.style.display=\'none\'">' : (CEM[s.category]||'م')}
         </div>
         <div>
