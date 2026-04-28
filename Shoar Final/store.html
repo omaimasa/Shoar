@@ -378,19 +378,24 @@ async function loadStore(id) {
 
 /* ── Review ── */
 async function openReviewModal() {
+  // مؤقت: بدون تحقق جوال
   const { data: { session } } = await db.auth.getSession();
-  if (!session?.user) {
-    currentUser = null;
-    openOv('ovAuth');
-    return;
-  }
-  currentUser = session.user;
+  currentUser = session?.user || null;
   curStar=0; aspects={};
   document.querySelectorAll('.sp,.as').forEach(s=>s.classList.remove('on'));
   document.getElementById('rvText').value='';
-  db.from('profiles').select('display_name').eq('id',currentUser.id).single().then(({data:p})=>{
-    document.getElementById('rvName').value = p?.display_name||'مستخدم مجهول';
-  });
+  // اجعل حقل الاسم قابل للتعديل
+  const rvName = document.getElementById('rvName');
+  rvName.removeAttribute('readonly');
+  rvName.style.opacity = '1';
+  rvName.placeholder = 'أدخل اسمك (اختياري)';
+  if (currentUser) {
+    db.from('profiles').select('display_name').eq('id',currentUser.id).single().then(({data:p})=>{
+      rvName.value = p?.display_name||'';
+    });
+  } else {
+    rvName.value = '';
+  }
   openOv('ovReview');
 }
 
