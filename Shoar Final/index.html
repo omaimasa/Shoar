@@ -488,7 +488,7 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
   </ul>
   <div class="nav-acts" id="navActs">
     <button class="btn btn-out btn-sm" onclick="openStoreModal()">إضافة متجر</button>
-    <button class="btn btn-gold btn-sm" onclick="requireAuth(()=>openReviewModal(null))">كتابة تقييم</button>
+    <button class="btn btn-gold btn-sm" onclick="openReviewModal(null)">كتابة تقييم</button>
   </div>
 </nav>
 
@@ -905,7 +905,7 @@ function finishAuth(name) {
 function renderNav(name) {
   document.getElementById('navActs').innerHTML = `
     <div class="user-chip"><span class="online"></span>${name}</div>
-    <button class="btn btn-gold btn-sm" onclick="requireAuth(()=>openReviewModal(null))">كتابة تقييم</button>
+    <button class="btn btn-gold btn-sm" onclick="openReviewModal(null)">كتابة تقييم</button>
     <button class="btn-ghost" onclick="doLogout()">خروج</button>`;
 }
 
@@ -1056,21 +1056,25 @@ function populateSel() {
    REVIEW
    ══════════════════════════════════════════ */
 async function openReviewModal(id) {
-  // تحقق دائماً من الجلسة قبل فتح النموذج
+  // مؤقت: بدون تحقق جوال
   const { data: { session } } = await db.auth.getSession();
-  if (!session?.user) {
-    currentUser = null;
-    pendingCb = () => openReviewModal(id);
-    goStep('stepPhone');
-    openOv('ovAuth');
-    return;
-  }
-  currentUser = session.user;
+  currentUser = session?.user || null;
   curStar=0; aspects={};
   document.querySelectorAll('.sp,.as').forEach(s=>s.classList.remove('on'));
   document.getElementById('rvText').value = '';
-  const { data: p } = await db.from('profiles').select('display_name').eq('id',currentUser.id).single();
-  document.getElementById('rvName').value = p?.display_name || 'مستخدم مجهول';
+  // اجعل حقل الاسم قابل للتعديل
+  const rvName = document.getElementById('rvName');
+  if (rvName) {
+    rvName.removeAttribute('readonly');
+    rvName.style.opacity = '1';
+    rvName.placeholder = 'أدخل اسمك (اختياري)';
+    if (currentUser) {
+      const { data: p } = await db.from('profiles').select('display_name').eq('id',currentUser.id).single();
+      rvName.value = p?.display_name || '';
+    } else {
+      rvName.value = '';
+    }
+  }
   if (id) document.getElementById('rvStore').value = id;
   openOv('ovReview');
 }
@@ -1080,17 +1084,20 @@ async function submitReview() {
   const text = document.getElementById('rvText').value.trim();
   if (!sid)     return showToast('⚠️ اختر متجراً','var(--rd)');
   if (!curStar) return showToast('⚠️ اختر تقييماً بالنجوم','var(--rd)');
-  // النص اختياري — لا يشترط الكتابة
 
   const btn = document.getElementById('rvBtn');
   btn.disabled=true; btn.textContent='جاري النشر...';
+
+  // مؤقت: قبول بدون user_id
+  const { data: { session } } = await db.auth.getSession();
+  currentUser = session?.user || null;
 
   const { error } = await db.from('reviews').insert({
     store_id:    sid, rating: curStar,
     delivery:    aspects.delivery||null, quality: aspects.quality||null,
     support:     aspects.support||null,  value:   aspects.value||null,
     body:        text || '',
-    author_name: document.getElementById('rvName').value || 'مستخدم مجهول',
+    author_name: document.getElementById('rvName')?.value?.trim() || 'زائر',
     user_id:     currentUser?.id || null, status: 'approved'
   });
 
