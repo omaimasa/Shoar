@@ -396,9 +396,9 @@ async function openReviewModal() {
 
 async function submitReview() {
   // التحقق الصارم من تسجيل الدخول
+  // مؤقت: قبول التعليق بدون تسجيل
   const { data: { session } } = await db.auth.getSession();
-  if (!session) { closeOv('ovReview'); openOv('ovAuth'); return; }
-  currentUser = session.user;
+  currentUser = session?.user || null;
   
   if (!curStar) return showToast('⚠️ اختر تقييماً من ١ إلى ٥','var(--rd)');
   const body = document.getElementById('rvText').value.trim();
@@ -412,8 +412,8 @@ async function submitReview() {
     support: aspects.support||null,
     value: aspects.value||null,
     body: body || '',
-    author_name: document.getElementById('rvName').value||'مستخدم مجهول',
-    user_id: currentUser.id,
+    author_name: document.getElementById('rvName').value.trim() || 'زائر',
+    user_id: currentUser?.id || null,
     status: 'approved'
   });
   btn.disabled=false; btn.textContent='نشر التقييم 🚀';
