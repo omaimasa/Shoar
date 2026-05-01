@@ -227,6 +227,10 @@ function closeOv(id){ document.getElementById(id).classList.remove('open'); }
 function showToast(msg,bg='var(--em)'){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
 async function init() {
+  // Redirect to home if no store ID
+  const id = new URLSearchParams(location.search).get('id');
+  if (!id) { location.href = 'index.html'; return; }
+  
   const { data:{ session }} = await db.auth.getSession();
   if (session) {
     currentUser = session.user;
