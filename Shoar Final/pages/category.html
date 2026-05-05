@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<link rel="canonical" href="https://shoar.com.sa/pages/category.html">
+<link rel="canonical" id="canonLink" href="https://shoar.com.sa/pages/category.html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="catTitle">أفضل المتاجر — Shoar</title>
 <meta name="description" id="catDesc" content="اكتشف أفضل المتاجر السعودية مع تقييمات حقيقية">
@@ -109,6 +109,14 @@ const CAC={store:'#10b981',product:'#4ade80',service:'#fb7185',specialist:'#818c
 const CEM={store:'م',product:'ن',service:'خ',specialist:'ا',other:'أ'};
 
 const cat = new URLSearchParams(location.search).get('cat');
+
+// Set canonical URL dynamically
+(function(){
+  const cat = new URLSearchParams(location.search).get('cat');
+  const canon = document.getElementById('canonLink');
+  if (canon && cat) canon.href = 'https://shoar.com.sa/pages/category.html?cat=' + cat;
+  else if (canon) canon.href = 'https://shoar.com.sa/pages/category.html';
+})();
 
 async function init() {
   // Update SEO
