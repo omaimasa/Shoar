@@ -237,8 +237,6 @@ async function init() {
     const { data:p } = await db.from('profiles').select('display_name').eq('id',currentUser.id).single();
     renderNav(p?.display_name||'مستخدم');
   }
-  const id = new URLSearchParams(location.search).get('id');
-  if (!id) { location.href='index.html'; return; }
   await loadStore(id);
 }
 
