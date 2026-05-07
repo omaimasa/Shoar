@@ -170,6 +170,10 @@ textarea.inp{resize:vertical;min-height:80px;}
         <div class="err-msg" id="phoneErr" style="display:none;"></div>
       </div>
       <button class="btn btn-em" style="width:100%;justify-content:center;padding:12px;" id="sendBtn" onclick="sendOTP()">إرسال رمز التحقق</button>
+      <div style="text-align:center;font-size:11px;color:var(--mu);margin-top:10px;line-height:1.6;">
+        بإدخال رقمك توافق على استلام رسالة <strong>SMS</strong> للتحقق من هويتك.<br>
+        لن نرسل رسائل تسويقية · <a href="pages/privacy.html" style="color:var(--em)">سياسة الخصوصية</a>
+      </div>
     </div>
     <div class="auth-step" id="stepOTP">
       <div class="mhd"><button class="btn-out btn" style="padding:5px 10px;font-size:12px;" onclick="goStep('stepPhone')">← رجوع</button><button class="xb" onclick="closeOv('ovAuth')">✕</button></div>
