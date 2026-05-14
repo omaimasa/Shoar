@@ -1,84 +1,124 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SMS Consent — شوركم | Shoarcom</title>
+<title>SMS Verification Consent — Shoarcom</title>
 <style>
-body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:0 24px;color:#333;line-height:1.8;}
-h1{font-size:24px;color:#10b981;border-bottom:2px solid #10b981;padding-bottom:10px;}
-h2{font-size:18px;color:#1a1a18;margin-top:30px;}
-.box{background:#f0fdf4;border:2px solid #10b981;border-radius:12px;padding:20px;margin:20px 0;}
-.box-en{background:#f0f9ff;border:2px solid #0ea5e9;border-radius:12px;padding:20px;margin:20px 0;}
-.logo{font-size:28px;font-weight:700;color:#10b981;margin-bottom:20px;display:block;}
-table{width:100%;border-collapse:collapse;margin:16px 0;}
-td{padding:10px;border:1px solid #ddd;vertical-align:top;}
-td:first-child{font-weight:bold;width:200px;background:#f9f9f9;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#f5f5f5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{background:#fff;border-radius:16px;padding:40px;max-width:520px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,.08);}
+.logo{font-size:26px;font-weight:700;color:#10b981;margin-bottom:6px;}
+.tagline{font-size:13px;color:#666;margin-bottom:28px;}
+h1{font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:6px;}
+.sub{font-size:13px;color:#666;margin-bottom:24px;line-height:1.6;}
+.field{margin-bottom:18px;}
+label{display:block;font-size:13px;font-weight:600;color:#333;margin-bottom:6px;}
+input[type=text],input[type=tel],input[type=email]{width:100%;padding:11px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;transition:border-color .2s;}
+input:focus{border-color:#10b981;}
+.phone-row{display:flex;gap:8px;}
+.code-select{width:100px;padding:11px 10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;background:#fff;}
+.consent-box{background:#f0fdf4;border:1.5px solid #10b981;border-radius:10px;padding:16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;}
+.consent-box input[type=checkbox]{margin-top:3px;width:18px;height:18px;accent-color:#10b981;flex-shrink:0;cursor:pointer;}
+.consent-text{font-size:13px;color:#333;line-height:1.7;}
+.consent-text strong{color:#10b981;}
+.links{font-size:12px;color:#888;margin-bottom:20px;}
+.links a{color:#10b981;text-decoration:none;}
+.links a:hover{text-decoration:underline;}
+.btn{width:100%;padding:13px;background:#10b981;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s;}
+.btn:hover{background:#059669;}
+.btn:disabled{background:#ccc;cursor:not-allowed;}
+.note{font-size:11px;color:#999;text-align:center;margin-top:14px;line-height:1.6;}
+.success{display:none;text-align:center;padding:20px;}
+.success h2{color:#10b981;font-size:20px;margin-bottom:8px;}
+.success p{color:#666;font-size:14px;}
+.divider{border:none;border-top:1px solid #eee;margin:24px 0;}
+.ar-note{background:#fafafa;border-radius:8px;padding:14px;margin-bottom:20px;font-size:12px;color:#555;text-align:right;direction:rtl;line-height:1.8;}
 </style>
 </head>
 <body>
+<div class="card">
+  <div class="logo">شوركم | Shoarcom</div>
+  <div class="tagline">Saudi Store Review Platform — shoar.com.sa</div>
 
-<span class="logo">شوركم | Shoarcom</span>
+  <h1>SMS Verification Sign-Up</h1>
+  <p class="sub">To submit a store review on Shoarcom, verify your phone number. You will receive one SMS with a verification code.</p>
 
-<h1>SMS Opt-In Consent & Disclosure</h1>
-<p><strong>Website:</strong> <a href="https://shoar.com.sa">https://shoar.com.sa</a></p>
+  <!-- Arabic note for Saudi users -->
+  <div class="ar-note">
+    للتحقق من هويتك وكتابة تقييم، أدخل رقم جوالك. ستصلك رسالة SMS واحدة تحتوي على رمز التحقق.
+  </div>
 
-<div class="box-en">
-<h2>How SMS Consent is Collected (English)</h2>
-<p>When a user visits <strong>shoar.com.sa</strong> and clicks <strong>"كتابة تقييم" (Write a Review)</strong> or <strong>"إضافة متجر" (Add Store)</strong>, a modal appears requesting their Saudi phone number.</p>
-<p>The modal displays the following consent language directly below the phone number input field:</p>
-<blockquote style="background:#fff;border-right:4px solid #10b981;padding:12px 16px;margin:10px 0;">
-  <strong>"بإدخال رقمك توافق على استلام رسالة SMS للتحقق من هويتك. لن نرسل رسائل تسويقية"</strong><br>
-  <em>(Translation: "By entering your number, you agree to receive an SMS for identity verification. No marketing messages will be sent.")</em>
-</blockquote>
+  <form id="consentForm" onsubmit="handleSubmit(event)">
+    <div class="field">
+      <label for="fullName">Full Name (الاسم الكامل)</label>
+      <input type="text" id="fullName" placeholder="Enter your full name" required>
+    </div>
 
-<h2>SMS Program Details</h2>
-<table>
-  <tr><td>Program Name</td><td>Shoarcom OTP Verification</td></tr>
-  <tr><td>Sender Number</td><td>+18889168337</td></tr>
-  <tr><td>Message Type</td><td>One-Time Password (OTP) for identity verification only</td></tr>
-  <tr><td>Message Frequency</td><td>One SMS per login/verification attempt</td></tr>
-  <tr><td>Message Content</td><td>"Your Shoarcom verification code is: XXXXXX. Valid for 10 minutes. Reply STOP to opt out."</td></tr>
-  <tr><td>Opt-in Method</td><td>Web Form — user voluntarily enters phone number</td></tr>
-  <tr><td>Opt-out Method</td><td>Reply STOP to any message</td></tr>
-  <tr><td>Marketing Messages</td><td>None — OTP only</td></tr>
-  <tr><td>Target Users</td><td>Saudi Arabia (+966) residents</td></tr>
-</table>
+    <div class="field">
+      <label for="phone">Phone Number (رقم الجوال) *</label>
+      <div class="phone-row">
+        <select class="code-select" id="dialCode">
+          <option value="+966">🇸🇦 +966</option>
+          <option value="+971">🇦🇪 +971</option>
+          <option value="+973">🇧🇭 +973</option>
+          <option value="+965">🇰🇼 +965</option>
+          <option value="+968">🇴🇲 +968</option>
+          <option value="+974">🇶🇦 +974</option>
+          <option value="+1">🇺🇸 +1</option>
+        </select>
+        <input type="tel" id="phone" placeholder="5xxxxxxxx" required style="flex:1;">
+      </div>
+    </div>
 
-<h2>Opt-In Flow Screenshot Description</h2>
-<ol>
-  <li>User clicks "كتابة تقييم" (Write a Review) button on shoar.com.sa</li>
-  <li>A modal appears with a phone number input field</li>
-  <li>Below the input: consent text stating SMS will be sent for verification</li>
-  <li>User enters their Saudi phone number (+966)</li>
-  <li>User clicks "إرسال رمز التحقق" (Send Verification Code)</li>
-  <li>User receives ONE SMS with OTP code</li>
-  <li>User enters the code to verify identity</li>
-</ol>
+    <hr class="divider">
+
+    <!-- EXPLICIT SMS CONSENT CHECKBOX — Required by Twilio -->
+    <div class="consent-box">
+      <input type="checkbox" id="smsConsent" required>
+      <div class="consent-text">
+        I consent to receive <strong>one-time SMS verification codes</strong> from <strong>Shoarcom</strong> (+18889168337) at the phone number provided above. These messages are for <strong>identity verification only</strong>. Message & data rates may apply. Reply <strong>STOP</strong> to opt out at any time. Text <strong>HELP</strong> for assistance.
+      </div>
+    </div>
+
+    <!-- Arabic consent text -->
+    <div style="background:#fafafa;border-radius:8px;padding:12px;margin-bottom:16px;direction:rtl;text-align:right;">
+      <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
+        <input type="checkbox" id="smsConsentAr" style="margin-top:3px;width:16px;height:16px;accent-color:#10b981;flex-shrink:0;" required>
+        <span style="font-size:12px;color:#444;line-height:1.8;">
+          أوافق على استلام <strong>رسالة SMS للتحقق من هويتي</strong> من شوركم على رقم الجوال المُدخل. الرسائل للتحقق فقط وليس للتسويق. قد تُطبَّق رسوم البيانات. للإلغاء أرسل <strong>STOP</strong>.
+        </span>
+      </label>
+    </div>
+
+    <div class="links">
+      By submitting, you also agree to our
+      <a href="https://shoar.com.sa/pages/terms.html" target="_blank">Terms of Service</a> &
+      <a href="https://shoar.com.sa/pages/privacy.html" target="_blank">Privacy Policy</a>.<br>
+      Consent to SMS is separate from and not required by our Terms of Service.
+    </div>
+
+    <button type="submit" class="btn" id="submitBtn">Send Verification Code →</button>
+
+    <p class="note">
+      Shoarcom will only send ONE SMS per verification attempt.<br>
+      No marketing messages will ever be sent.<br>
+      Msg frequency: 1 msg per verification. Msg & data rates may apply.
+    </p>
+  </form>
+
+  <div class="success" id="successMsg">
+    <h2>✓ Consent Recorded</h2>
+    <p>This page demonstrates the opt-in flow for Twilio verification purposes.<br>On shoar.com.sa, the user would now receive their OTP SMS.</p>
+  </div>
 </div>
 
-<div class="box">
-<h2>النص العربي للموافقة (Arabic Consent Text)</h2>
-<p>النص الظاهر للمستخدم أسفل حقل رقم الجوال:</p>
-<blockquote style="background:#fff;border-right:4px solid #10b981;padding:12px 16px;font-size:16px;">
-  <strong>بإدخال رقمك توافق على استلام رسالة SMS للتحقق من هويتك · لن نرسل رسائل تسويقية</strong>
-</blockquote>
-
-<h2>سياسة الرسائل</h2>
-<ul>
-  <li>✅ رسالة واحدة فقط لكل عملية تحقق</li>
-  <li>✅ لا رسائل تسويقية أو إعلانية</li>
-  <li>✅ المستخدم يختار إدخال رقمه بإرادته</li>
-  <li>✅ إلغاء الاشتراك: أرسل STOP لأي رسالة</li>
-</ul>
-</div>
-
-<h2>Privacy Policy</h2>
-<p>Full privacy policy: <a href="https://shoar.com.sa/pages/privacy.html">https://shoar.com.sa/pages/privacy.html</a></p>
-<p>Terms of Service: <a href="https://shoar.com.sa/pages/terms.html">https://shoar.com.sa/pages/terms.html</a></p>
-
-<hr style="margin:40px 0;">
-<p style="font-size:12px;color:#666;">Shoarcom Establishment · hello@shoar.com.sa · shoar.com.sa · Saudi Arabia</p>
-
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  document.getElementById('consentForm').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+}
+</script>
 </body>
 </html>
