@@ -384,32 +384,30 @@ async function loadStore(id) {
 
 /* ── Review ── */
 async function openReviewModal() {
-  // مؤقت: بدون تحقق جوال
+  // تحقق من الجلسة — يجب تسجيل الدخول بالجوال
   const { data: { session } } = await db.auth.getSession();
-  currentUser = session?.user || null;
+  if (!session?.user) {
+    currentUser = null;
+    openOv('ovAuth');
+    return;
+  }
+  currentUser = session.user;
   curStar=0; aspects={};
   document.querySelectorAll('.sp,.as').forEach(s=>s.classList.remove('on'));
   document.getElementById('rvText').value='';
-  // اجعل حقل الاسم قابل للتعديل
   const rvName = document.getElementById('rvName');
-  rvName.removeAttribute('readonly');
-  rvName.style.opacity = '1';
-  rvName.placeholder = 'أدخل اسمك (اختياري)';
-  if (currentUser) {
-    db.from('profiles').select('display_name').eq('id',currentUser.id).single().then(({data:p})=>{
-      rvName.value = p?.display_name||'';
-    });
-  } else {
-    rvName.value = '';
-  }
+  rvName.setAttribute('readonly', true);
+  rvName.style.opacity = '0.6';
+  db.from('profiles').select('display_name').eq('id',currentUser.id).single().then(({data:p})=>{
+    rvName.value = p?.display_name||'مستخدم مجهول';
+  });
   openOv('ovReview');
 }
 
 async function submitReview() {
-  // التحقق الصارم من تسجيل الدخول
-  // مؤقت: قبول التعليق بدون تسجيل
   const { data: { session } } = await db.auth.getSession();
-  currentUser = session?.user || null;
+  if (!session?.user) { closeOv('ovReview'); openOv('ovAuth'); return; }
+  currentUser = session.user;
   
   if (!curStar) return showToast('⚠️ اختر تقييماً من ١ إلى ٥','var(--rd)');
   const body = document.getElementById('rvText').value.trim();
@@ -423,8 +421,8 @@ async function submitReview() {
     support: aspects.support||null,
     value: aspects.value||null,
     body: body || '',
-    author_name: document.getElementById('rvName').value.trim() || 'زائر',
-    user_id: currentUser?.id || null,
+    author_name: document.getElementById('rvName').value || 'مستخدم مجهول',
+    user_id: currentUser.id,
     status: 'approved'
   });
   btn.disabled=false; btn.textContent='نشر التقييم 🚀';
