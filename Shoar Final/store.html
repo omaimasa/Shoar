@@ -438,9 +438,13 @@ function setAsp(k,n){ aspects[k]=n; document.querySelector(`[data-k="${k}"]`).qu
 /* ── Auth ── */
 async function sendOTP(){
   const code=document.getElementById('dialCode').value.trim();
-  const local=document.getElementById('phoneNum').value.trim().replace(/^0/,'');
+  const raw=document.getElementById('phoneNum').value.trim();
+  const local=raw.replace(/^0/,'');  // strip leading zero
   if(!local||local.length<9){document.getElementById('phoneErr').textContent='رقم غير صحيح';document.getElementById('phoneErr').style.display='block';return;}
   document.getElementById('phoneErr').style.display='none';
+
+  // ✅ Build the full E.164 phone number BEFORE using it
+  otpPhone = code + local;  // e.g. "+966558257711"
 
   const btn=document.getElementById('sendBtn'); btn.disabled=true; btn.textContent='جاري الإرسال...';
   console.log('Sending OTP to:', otpPhone);
