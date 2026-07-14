@@ -213,6 +213,20 @@ textarea.inp{resize:vertical;min-height:72px;}
     </div>
     <div id="mStoreDetails"></div>
 
+    <!-- معلومات أساسية قابلة للتعديل -->
+    <div class="fg" style="margin-top:14px;">
+      <label class="lb">اسم المتجر</label>
+      <input type="text" class="inp" id="storeName" placeholder="اسم المتجر" style="font-size:13px;">
+    </div>
+    <div class="fg" style="margin-top:14px;">
+      <label class="lb">الموقع الإلكتروني</label>
+      <input type="text" class="inp" id="storeWebsite" placeholder="مثل https://store.sa" style="font-size:13px;">
+    </div>
+    <div class="fg" style="margin-top:14px;">
+      <label class="lb">حساب إنستاجرام</label>
+      <input type="text" class="inp" id="storeIg" placeholder="مثل @store_name" style="font-size:13px;">
+    </div>
+
     <!-- كلمات مفتاحية -->
     <div class="fg" style="margin-top:14px;">
       <label class="lb">كلمات مفتاحية (للبحث والـ SEO)</label>
@@ -433,6 +447,12 @@ async function openStoreDetail(id) {
   openOv('ovStore');
   // Pre-fill fields with THIS store's data — reset every time
   setTimeout(() => {
+    const nameInput = document.getElementById('storeName');
+    if (nameInput) nameInput.value = s.name || '';
+    const webInput = document.getElementById('storeWebsite');
+    if (webInput) webInput.value = s.website || '';
+    const igInput = document.getElementById('storeIg');
+    if (igInput) igInput.value = s.ig_handle || '';
     const kwInput = document.getElementById('storeKeywords');
     if (kwInput) kwInput.value = s.keywords || '';
     const iconInput = document.getElementById('iconUrl');
@@ -462,10 +482,14 @@ async function updateStoreStatus(id, status) {
   const updateData = { status, admin_note: note };
   const iconUrl = document.getElementById('iconUrl')?.value?.trim();
   if (iconUrl) updateData.icon_url = iconUrl;
-  // احفظ الكلمات المفتاحية فقط إذا كان المودال مفتوح لنفس المتجر
+  // احفظ الحقول القابلة للتعديل فقط إذا كان المودال مفتوح لنفس المتجر
   const kwField = document.getElementById('storeKeywords');
   if (kwField && selectedStoreId === id) {
     updateData.keywords = kwField.value.trim();
+    const nameVal = document.getElementById('storeName')?.value?.trim();
+    if (nameVal) updateData.name = nameVal;
+    updateData.website   = document.getElementById('storeWebsite')?.value?.trim() || null;
+    updateData.ig_handle = document.getElementById('storeIg')?.value?.trim() || null;
   }
   const { error } = await db.from('stores').update(updateData).eq('id', id);
   if (error) return showToast('❌ خطأ في التحديث','var(--rd)');
@@ -476,9 +500,15 @@ async function updateStoreStatus(id, status) {
 async function saveStoreDetails() {
   if (!selectedStoreId) return;
   const updateData = {};
+  const name     = document.getElementById('storeName')?.value?.trim();
+  const website  = document.getElementById('storeWebsite')?.value?.trim();
+  const igHandle = document.getElementById('storeIg')?.value?.trim();
   const note     = document.getElementById('adminNote')?.value;
   const iconUrl  = document.getElementById('iconUrl')?.value?.trim();
   const keywords = document.getElementById('storeKeywords')?.value?.trim();
+  if (name) updateData.name = name; else if (name === '') return showToast('⚠️ اسم المتجر مطلوب', 'var(--rd)');
+  if (website  !== undefined) updateData.website   = website || null;
+  if (igHandle !== undefined) updateData.ig_handle = igHandle || null;
   if (note     !== undefined) updateData.admin_note = note;
   if (iconUrl  !== undefined) updateData.icon_url   = iconUrl;
   if (keywords !== undefined) updateData.keywords   = keywords;
@@ -489,10 +519,14 @@ async function saveStoreDetails() {
   // Update local store data
   const idx = allStores.findIndex(s => s.id === selectedStoreId);
   if (idx > -1) {
+    if (name) { allStores[idx].name = name; document.getElementById('mStoreName').textContent = name; }
+    allStores[idx].website   = website || null;
+    allStores[idx].ig_handle = igHandle || null;
     allStores[idx].keywords  = keywords;
     allStores[idx].icon_url  = iconUrl;
     allStores[idx].admin_note = note;
   }
+  loadStores();
   showToast('✅ تم حفظ التفاصيل', 'var(--gr)');
 }
 
