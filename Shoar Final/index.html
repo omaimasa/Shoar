@@ -21,8 +21,8 @@
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="شوركم">
 <meta name="theme-color" content="#0b1710">
-<link rel="icon" type="image/png" href="/shoarlogo.png">
-<link rel="apple-touch-icon" href="/shoarlogo.png">
+<link rel="icon" type="image/png" href="shoarlogo.png">
+<link rel="apple-touch-icon" href="shoarlogo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -205,11 +205,51 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 .empty-ai-btn:hover{background:rgba(16,185,129,.2);}
 
 .loader{grid-column:1/-1;text-align:center;padding:60px;color:var(--mu);}
+/* ═══════════ نظام الأقسام ═══════════ */
+:root{--navh:66px;--railh:46px;--hair:rgba(255,255,255,.055);--band:rgba(0,0,0,.26);}
+.logo-text{font-weight:800;font-size:19px;color:var(--tx);letter-spacing:-.3px;}
+
+/* شريط الانتقال بين الأقسام */
+.rail{position:sticky;top:var(--navh);z-index:150;background:rgba(10,10,10,.92);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
+.rail__in{max-width:1000px;margin:0 auto;display:flex;gap:4px;padding:0 24px;
+  overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
+.rail__in::-webkit-scrollbar{display:none;}
+.rail a{flex:0 0 auto;padding:14px 14px 12px;font-size:13px;font-weight:500;color:var(--mu);
+  text-decoration:none;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;
+  white-space:nowrap;}
+.rail a:hover{color:var(--tx);}
+.rail a.on{color:var(--em-l);border-bottom-color:var(--em);}
+
+/* الأشرطة — كل قسم يقرأ كصفحة مستقلة */
+.band{position:relative;padding:76px 0;scroll-margin-top:calc(var(--navh) + var(--railh));}
+.band--alt{background:var(--band);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);}
+.band__in{max-width:1000px;margin:0 auto;padding:0 24px;}
+.band--wide .band__in{max-width:1160px;}
+
+/* رأس القسم: تسمية + عنوان */
+.eyebrow{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:600;
+  color:var(--em-l);letter-spacing:.6px;margin-bottom:14px;}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--em);opacity:.65;}
+
+/* ظهور تدريجي عند التمرير */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+.rv.in{opacity:1;transform:none;}
+@media(prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none;}
+  html{scroll-behavior:auto;}
+}
+@media(max-width:600px){
+  .band{padding:52px 0;}
+  .rail__in{padding:0 16px;}
+  .rail a{padding:12px 11px 10px;font-size:12.5px;}
+}
+
 /* ===== أقسام المحتوى الثابت (SEO / AdSense) ===== */
-.content-sec{max-width:960px;margin:0 auto 40px;padding:0 24px;}
-.content-sec h2{font-size:22px;font-weight:700;color:var(--tx);margin-bottom:14px;line-height:1.6;}
+.content-sec{max-width:none;margin:0;padding:0;}
+.content-sec h2{font-size:27px;font-weight:700;color:var(--tx);margin-bottom:16px;line-height:1.5;letter-spacing:-.3px;}
 .content-sec h3{font-size:16px;font-weight:600;color:var(--em-l);margin:22px 0 8px;}
-.content-sec p{font-size:14.5px;color:#b8c7c0;line-height:2;margin-bottom:12px;}
+.content-sec p{font-size:15px;color:#b3c2bb;line-height:2.05;margin-bottom:13px;max-width:70ch;}
 .content-sec ul{margin:10px 22px 14px;}
 .content-sec li{font-size:14.5px;color:#b8c7c0;line-height:2;margin-bottom:6px;}
 .content-sec strong{color:var(--tx);font-weight:600;}
@@ -602,7 +642,7 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
 <body>
 
 <nav>
-  <a class="logo-img" href="/"><img src="/shoarlogo.png" alt="شوركم" style="height:38px;width:auto;display:block;"></a>
+  <a class="logo-img" href="/"><img src="shoarlogo.png" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-text',textContent:'شوركم'}))" alt="شوركم" style="height:38px;width:auto;display:block;"></a>
   <ul class="nav-links">
     <li><a href="/">الرئيسية</a></li>
     <li><a href="#stores">المتاجر</a></li>
@@ -685,20 +725,24 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
 </div>
 -->
 
-<div class="srch-wrap">
-  <div class="tags">
-    <div class="tag on" onclick="setFilter(this,'all')">الكل</div>
-    <div class="tag" onclick="setFilter(this,'store')">متجر</div>
-    <div class="tag" onclick="setFilter(this,'product')">منتج</div>
-    <div class="tag" onclick="setFilter(this,'service')">مزود خدمة</div>
-    <div class="tag" onclick="setFilter(this,'specialist')">اختصاصي</div>
-    <div class="tag" onclick="setFilter(this,'other')">أخرى</div>
-  </div>
+
+<!-- شريط الانتقال بين أقسام الصفحة -->
+<div class="rail" id="rail">
+  <nav class="rail__in" aria-label="أقسام الصفحة">
+    <a href="#about">عن شوركم</a>
+    <a href="#stores">المتاجر</a>
+    <a href="#how">كيف تعمل</a>
+    <a href="#trust">الشفافية</a>
+    <a href="#blog">المدونة</a>
+    <a href="#faq">الأسئلة</a>
+  </nav>
 </div>
 
-<!-- ═══════ محتوى ثابت أصلي — يراه زاحف Google قبل تشغيل JS ═══════ -->
-<section class="content-sec" aria-label="عن شوركم">
-  <h2>تقييمات المتاجر السعودية — منصة شوركم</h2>
+<section class="band" id="about">
+  <div class="band__in rv">
+    <div class="content-sec">
+      <p class="eyebrow">المنصة</p>
+<h2>تقييمات المتاجر السعودية — منصة شوركم</h2>
   <p>
     <strong>شوركم (Shoarcom)</strong> منصة سعودية مستقلة لتقييم المتاجر الإلكترونية والتحقق من مصداقيتها.
     السوق الرقمي السعودي نما بسرعة في السنوات الأخيرة، وفتح معه باباً لآلاف المتاجر الصغيرة على
@@ -718,10 +762,57 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
     <a href="pages/category.html?cat=service">مزودو الخدمة</a>
     <a href="pages/category.html?cat=specialist">الاختصاصيون</a>
   </div>
+    </div>
+  </div>
 </section>
 
-<section class="content-sec" aria-label="كيف تعمل المنصة">
-  <h2>كيف تعمل منصة شوركم؟</h2>
+<section class="band band--alt band--wide" id="stores">
+  <div class="band__in rv">
+    <div class="content-sec">
+      <p class="eyebrow">المتاجر</p>
+      <h2>المتاجر الأعلى تقييماً</h2>
+      <p>تصفّح المتاجر المسجّلة مرتّبة حسب تقييمات المستخدمين الموثّقين. استخدم الفلاتر
+      لتضييق النتائج حسب الفئة، أو ابحث باسم المتجر من الأعلى.</p>
+    </div>
+    <div id="storesInner" style="margin-top:26px;">
+<div class="tags">
+    <div class="tag on" onclick="setFilter(this,'all')">الكل</div>
+    <div class="tag" onclick="setFilter(this,'store')">متجر</div>
+    <div class="tag" onclick="setFilter(this,'product')">منتج</div>
+    <div class="tag" onclick="setFilter(this,'service')">مزود خدمة</div>
+    <div class="tag" onclick="setFilter(this,'specialist')">اختصاصي</div>
+    <div class="tag" onclick="setFilter(this,'other')">أخرى</div>
+      </div>
+
+      <div style="margin-top:20px;">
+<div class="grid" id="grid">
+    <div class="loader"><div class="spinner"></div>جاري تحميل المتاجر…</div>
+  </div>
+  
+<noscript>
+    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:22px;text-align:center;">
+      <p style="color:#b8c7c0;line-height:2;font-size:14.5px;margin-bottom:10px;">
+        قائمة المتاجر تُحمّل عبر JavaScript. لتصفّح المتاجر بدون تشغيل JavaScript
+        استخدم صفحات الفئات:
+      </p>
+      <p>
+        <a href="pages/category.html?cat=store" style="color:var(--em);margin-left:14px;">المتاجر</a>
+        <a href="pages/category.html?cat=product" style="color:var(--em);margin-left:14px;">المنتجات</a>
+        <a href="pages/category.html?cat=service" style="color:var(--em);margin-left:14px;">مزودو الخدمة</a>
+        <a href="pages/category.html?cat=specialist" style="color:var(--em);">الاختصاصيون</a>
+      </p>
+    </div>
+  </noscript>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="how">
+  <div class="band__in rv">
+    <div class="content-sec">
+      <p class="eyebrow">الدليل</p>
+<h2>كيف تعمل منصة شوركم؟</h2>
   <div class="steps">
     <div class="step">
       <div class="num">١</div>
@@ -742,10 +833,15 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
       قرار خاطئ.</p>
     </div>
   </div>
+    </div>
+  </div>
 </section>
 
-<section class="content-sec" aria-label="مصداقية التقييمات">
-  <h2>كيف نحافظ على مصداقية التقييمات؟</h2>
+<section class="band band--alt" id="trust">
+  <div class="band__in rv">
+    <div class="content-sec">
+      <p class="eyebrow">الشفافية</p>
+<h2>كيف نحافظ على مصداقية التقييمات؟</h2>
   <p>
     أي منصة تقييمات تفقد قيمتها لحظة ما يشك المستخدم في نزاهتها. لذلك بنينا نظاماً واضحاً
     ومعلناً للجميع:
@@ -764,10 +860,15 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
     نحن لا نتقاضى أي مبلغ من المتاجر مقابل تحسين تقييماتها أو إخفاء ملاحظات سلبية، ولا نقبل
     اشتراكات تمنح المتجر أي أفضلية في الترتيب.
   </p>
+    </div>
+  </div>
 </section>
 
-<section class="content-sec" aria-label="مقالات المدونة">
-  <h2>من مدونة شوركم</h2>
+<section class="band" id="blog">
+  <div class="band__in rv">
+    <div class="content-sec">
+      <p class="eyebrow">المدونة</p>
+<h2>من مدونة شوركم</h2>
   <p>أدلة عملية كتبها فريقنا لمساعدتك على الشراء بثقة ومعرفة حقوقك كمستهلك سعودي.</p>
   <div class="posts">
     <a class="post" href="blog/how-to-verify-store-credibility.html">
@@ -797,10 +898,15 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
     </a>
   </div>
   <p style="margin-top:16px;"><a href="blog.html">تصفّح كل مقالات المدونة ←</a></p>
+    </div>
+  </div>
 </section>
 
-<section class="content-sec" aria-label="أسئلة شائعة">
-  <h2>أسئلة شائعة</h2>
+<section class="band band--alt" id="faq">
+  <div class="band__in rv">
+    <div class="content-sec">
+      <p class="eyebrow">الأسئلة</p>
+<h2>أسئلة شائعة</h2>
 
   <div class="faq-item">
     <h3>كيف أعرف أن المتجر الإلكتروني موثوق؟</h3>
@@ -845,40 +951,13 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
     وشارك تجربتك على شوركم حتى يستفيد غيرك. التفاصيل الكاملة في
     <a href="blog/saudi-consumer-rights.html">دليل حقوق المستهلك السعودي</a>.</p>
   </div>
-</section>
-
-<div class="sec" id="stores">
-  <div class="sec-hd">
-    <div class="sec-t">المتاجر <span>الأعلى تقييماً</span></div>
-  </div>
-  <div class="grid" id="grid">
-    <div class="loader"><div class="spinner"></div>جاري تحميل المتاجر…</div>
-  </div>
-  <noscript>
-    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:22px;text-align:center;">
-      <p style="color:#b8c7c0;line-height:2;font-size:14.5px;margin-bottom:10px;">
-        قائمة المتاجر تُحمّل عبر JavaScript. لتصفّح المتاجر بدون تشغيل JavaScript
-        استخدم صفحات الفئات:
-      </p>
-      <p>
-        <a href="pages/category.html?cat=store" style="color:var(--em);margin-left:14px;">المتاجر</a>
-        <a href="pages/category.html?cat=product" style="color:var(--em);margin-left:14px;">المنتجات</a>
-        <a href="pages/category.html?cat=service" style="color:var(--em);margin-left:14px;">مزودو الخدمة</a>
-        <a href="pages/category.html?cat=specialist" style="color:var(--em);">الاختصاصيون</a>
-      </p>
     </div>
-  </noscript>
-</div>
-
-<!-- وحدة إعلانية — فعّلها بعد موافقة AdSense
-<div class="ad-wrap" style="padding-bottom:44px;">
-  <div class="ad-slot" style="min-height:250px;max-width:728px;margin:0 auto;"></div>
-</div>
--->
+  </div>
+</section>
 
 <footer>
   <div class="fg-grid">
-    <div class="fb-brand"><a class="logo-img" href="/"><img src="/shoarlogo.png" alt="شوركم" style="height:32px;width:auto;display:block;"></a><p>منصة التقييمات الشفافة للمتاجر السعودية.</p></div>
+    <div class="fb-brand"><a class="logo-img" href="/"><img src="shoarlogo.png" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-text',textContent:'شوركم'}))" alt="شوركم" style="height:32px;width:auto;display:block;"></a><p>منصة التقييمات الشفافة للمتاجر السعودية.</p></div>
     <div class="fc"><h4>المنصة</h4><ul><li><a href="/">الرئيسية</a></li><li><a href="#stores">المتاجر</a></li><li><a href="pages/category.html">اكتشف حسب الفئة</a></li><li><a href="blog.html">المدونة</a></li><li><a href="#" onclick="openStoreModal()">أضف متجرك</a></li></ul></div>
     <div class="fc"><h4>قانوني</h4><ul><li><a href="pages/privacy.html">الخصوصية</a></li><li><a href="pages/terms.html">الشروط</a></li><li><a href="pages/about.html">من نحن</a></li><li><a href="pages/contact.html">تواصل معنا</a></li></ul></div>
     <div class="fc"><h4>تواصل</h4><ul><li><a href="mailto:hello@shoar.com.sa">hello@shoar.com.sa</a></li><li><a href="https://instagram.com/shoarcom" target="_blank">📸 إنستقرام</a></li><li><a href="https://twitter.com/shoar_sa" target="_blank">𝕏 تويتر</a></li></ul></div>
@@ -943,7 +1022,7 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
     <div class="auth-step" id="stepName">
       <div class="mhd"><div></div><button class="xb" onclick="closeOv('ovAuth')">✕</button></div>
       <div class="auth-icon">👋</div>
-      <div style="text-align:center;margin-bottom:8px;"><img src="/shoarlogo.png" alt="Shoar" style="height:28px;width:auto;"></div><div class="auth-title">أهلاً بك!</div>
+      <div style="text-align:center;margin-bottom:8px;"><img src="shoarlogo.png" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-text',textContent:'شوركم'}))" alt="Shoar" style="height:28px;width:auto;"></div><div class="auth-title">أهلاً بك!</div>
       <div class="auth-sub">اختر اسماً يظهر مع تقييماتك</div>
       <div class="fg">
         <label class="lb">اسمك</label>
@@ -1350,7 +1429,7 @@ function renderGrid(data, showAllLink) {
   });
   g.innerHTML = html;
 
-  const wrap = document.getElementById('stores');
+  const wrap = document.getElementById('storesInner') || document.getElementById('stores');
   let moreBtn = document.getElementById('viewAllStoresBtn');
   if (showAllLink) {
     if (!moreBtn) {
@@ -1364,6 +1443,47 @@ function renderGrid(data, showAllLink) {
     moreBtn.remove();
   }
 }
+
+
+/* ═══ نظام الأقسام: ارتفاع النافبار، القسم النشط، الظهور التدريجي ═══ */
+(function(){
+  var navEl = document.querySelector('nav'), rail = document.getElementById('rail');
+  function sizes(){
+    if(navEl) document.documentElement.style.setProperty('--navh', navEl.offsetHeight+'px');
+    if(rail)  document.documentElement.style.setProperty('--railh', rail.offsetHeight+'px');
+  }
+  sizes();
+  window.addEventListener('resize', sizes);
+  window.addEventListener('load', sizes);
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* الظهور التدريجي */
+  var revs = document.querySelectorAll('.rv');
+  if(reduce || !('IntersectionObserver' in window)){
+    revs.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var ro = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
+    }, {rootMargin:'0px 0px -12% 0px', threshold:0.08});
+    revs.forEach(function(el){ ro.observe(el); });
+  }
+
+  /* تمييز القسم النشط في الشريط */
+  var links = Array.prototype.slice.call(document.querySelectorAll('.rail a'));
+  var bands = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  if(bands.length && 'IntersectionObserver' in window){
+    var so = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(!e.isIntersecting) return;
+        links.forEach(function(a){
+          a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin:'-30% 0px -60% 0px', threshold:0});
+    bands.forEach(function(b){ so.observe(b); });
+  }
+})();
 
 function doFilter() {
   const q = document.getElementById('searchQ').value.trim().toLowerCase();
