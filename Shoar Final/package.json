@@ -1,0 +1,16 @@
+{
+  "name": "shoar",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "شوركم — منصة تقييم المتاجر السعودية",
+  "scripts": {
+    "build": "node build-stores.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
