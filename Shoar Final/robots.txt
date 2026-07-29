@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# لوحة التحكم — لا تُفهرس
+Disallow: /admin.html
+Disallow: /admin/
+
+# روابط الاستعلام القديمة (استُبدلت بصفحات ثابتة)
+Disallow: /store.html?id=
+
+# زواحف إعلانات Google — يجب السماح لها صراحةً
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: AdsBot-Google-Mobile
+Allow: /
+
+Sitemap: https://shoar.com.sa/sitemap.xml
