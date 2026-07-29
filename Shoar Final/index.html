@@ -1004,12 +1004,12 @@ footer{border-top:1px solid var(--bd);padding:44px 40px 28px;}
       <div class="auth-title">رمز التحقق</div>
       <div class="auth-sub" id="otpSub">أُرسل رمز SMS إلى جوالك</div>
       <div class="otp-row">
-        <input class="otp-b" id="d1" style="direction:ltr;" type="tel" maxlength="1" oninput="otpIn(this,'d2')" onkeydown="otpDel(event,this,'')">
-        <input class="otp-b" id="d2" type="tel" maxlength="1" oninput="otpIn(this,'d3')" onkeydown="otpDel(event,this,'d1')">
-        <input class="otp-b" id="d3" type="tel" maxlength="1" oninput="otpIn(this,'d4')" onkeydown="otpDel(event,this,'d2')">
-        <input class="otp-b" id="d4" type="tel" maxlength="1" oninput="otpIn(this,'d5')" onkeydown="otpDel(event,this,'d3')">
-        <input class="otp-b" id="d5" type="tel" maxlength="1" oninput="otpIn(this,'d6')" onkeydown="otpDel(event,this,'d4')">
-        <input class="otp-b" id="d6" type="tel" maxlength="1" oninput="otpIn(this,'')"   onkeydown="otpDel(event,this,'d5')">
+        <input class="otp-b" id="d1" style="direction:ltr;" type="tel" maxlength="1" oninput="otpIn(this,'d2')" onkeydown="otpDel(event,this,'')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d2" type="tel" maxlength="1" oninput="otpIn(this,'d3')" onkeydown="otpDel(event,this,'d1')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d3" type="tel" maxlength="1" oninput="otpIn(this,'d4')" onkeydown="otpDel(event,this,'d2')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d4" type="tel" maxlength="1" oninput="otpIn(this,'d5')" onkeydown="otpDel(event,this,'d3')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d5" type="tel" maxlength="1" oninput="otpIn(this,'d6')" onkeydown="otpDel(event,this,'d4')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d6" type="tel" maxlength="1" oninput="otpIn(this,'')"   onkeydown="otpDel(event,this,'d5')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
       </div>
       <div class="err-msg" id="otpErr" style="display:none;text-align:center;margin-top:6px;"></div>
       <div class="resend-row" id="resendRow">
@@ -1196,14 +1196,61 @@ async function sendOTP() {
   if (error) return setPhoneErr('تعذّر الإرسال. تحقق من الرقم.');
 
   document.getElementById('otpSub').textContent = `أُرسل رمز التحقق إلى ${otpPhone}`;
-  goStep('stepOTP');
+  goStep('stepOTP'); startWebOTP();
   startTimer();
   setTimeout(() => document.getElementById('d1').focus(), 100);
 }
 
 /* OTP boxes input handling */
-function otpIn(el, nextId) {
-  el.value = el.value.replace(/\D/g, '');
+
+/* ═══ الملء التلقائي لرمز التحقق ═══ */
+const OTP_IDS = ['d1','d2','d3','d4','d5','d6'];
+
+/* يوزّع رمزاً كاملاً على الخانات الست — يُستدعى من اللصق والملء التلقائي وWebOTP */
+function fillOTP(code){
+  code = String(code || '').replace(/\D/g, '').slice(0, 6);
+  if (!code) return;
+  OTP_IDS.forEach(function(id, i){
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = code[i] || '';
+    el.classList.toggle('done', !!el.value);
+  });
+  const empty = OTP_IDS.find(function(id){
+    const el = document.getElementById(id); return el && !el.value;
+  });
+  const focusEl = document.getElementById(empty || 'd6');
+  if (focusEl) focusEl.focus();
+  if (code.length === 6) verifyOTP();
+}
+
+/* اللصق في أي خانة يوزّع الرمز كاملاً */
+function otpPaste(e){
+  const txt = (e.clipboardData || window.clipboardData).getData('text');
+  if (!txt) return;
+  e.preventDefault();
+  fillOTP(txt);
+}
+
+/* WebOTP — كروم أندرويد يقرأ الرمز من الرسالة تلقائياً */
+let otpAbort = null;
+function startWebOTP(){
+  if (!('OTPCredential' in window)) return;
+  try { if (otpAbort) otpAbort.abort(); } catch(e){}
+  otpAbort = new AbortController();
+  navigator.credentials.get({ otp: { transport: ['sms'] }, signal: otpAbort.signal })
+    .then(function(c){ if (c && c.code) fillOTP(c.code); })
+    .catch(function(){ /* أُلغي أو انتهت المهلة — تجاهل */ });
+}
+function stopWebOTP(){
+  try { if (otpAbort) otpAbort.abort(); } catch(e){}
+  otpAbort = null;
+}
+
+function otpIn(el,nextId){
+  const v=el.value.replace(/\D/g,'');
+  if(v.length>1){fillOTP(v);return;}
+  el.value=v;
   el.classList.toggle('done', !!el.value);
   if (el.value && nextId) document.getElementById(nextId).focus();
   if (getOTP().length === 6) verifyOTP();
@@ -1220,6 +1267,7 @@ function getOTP() {
 
 /* Step 2: التحقق من الرمز */
 async function verifyOTP() {
+  stopWebOTP();
   const token = getOTP();
   if (token.length < 6) return setOTPErr('أدخل الرمز المكوّن من ٦ أرقام');
   clearOTPErr();
@@ -1248,6 +1296,7 @@ async function verifyOTP() {
 
 /* إعادة الإرسال */
 async function resendOTP() {
+  startWebOTP();
   await db.auth.signInWithOtp({ phone: otpPhone });
   ['d1','d2','d3','d4','d5','d6'].forEach(id => {
     const el = document.getElementById(id);
