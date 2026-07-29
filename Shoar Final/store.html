@@ -291,6 +291,9 @@ async function init() {
   await loadStore(id);
 }
 
+/* الجزء الديناميكي فقط — نحفظ الأقسام التحريرية والفوتر المُسبقين */
+function liveEl(){ return document.getElementById('liveArea') || document.getElementById('main'); }
+
 function renderNav(name) {
   document.getElementById('navUser').innerHTML = `
     <div class="user-chip"><span class="online"></span>${name}</div>`;
@@ -302,7 +305,7 @@ async function loadStore(id) {
     db.from('reviews').select('*').eq('store_id',id).eq('status','approved').order('created_at',{ascending:false})
   ]);
   if (storeErr) console.error('Store load error:', storeErr);
-  if (!store){ document.getElementById('main').innerHTML='<div class="empty">المتجر غير موجود</div>'; return; }
+  if (!store){ liveEl().innerHTML='<div class="empty">المتجر غير موجود</div>'; return; }
   currentStore = store;
   document.title = store.name + ' — تقييمات وآراء | Shoar';
   
@@ -382,7 +385,7 @@ async function loadStore(id) {
     </div>`).join('') : '<div class="empty">لا توجد تقييمات بعد — كن أول من يقيّم!</div>';
 
   injectStoreSchema(store, reviews||[]);
-  document.getElementById('main').innerHTML = `
+  liveEl().innerHTML = `
     <div class="store-header">
       <div class="store-avatar" style="background:${store.icon_url?'transparent':CBG[store.category]||'#222'};color:${CAC[store.category]||'#10b981'}">
         ${store.icon_url?'<img src="'+store.icon_url+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">':CEM[store.category]||'م'}

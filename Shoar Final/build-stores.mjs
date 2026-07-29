@@ -163,6 +163,7 @@ function renderMain(store, reviews) {
     </footer>`;
 
   return `
+    <div id="liveArea">
     <nav aria-label="مسار التصفح" style="font-size:13px;color:var(--mu);margin-bottom:14px;">
       <a href="../index.html" style="color:var(--mu);text-decoration:none;">الرئيسية</a> ←
       <a href="../pages/category.html?cat=${esc(store.category||'')}" style="color:var(--mu);text-decoration:none;">${esc(cat)}</a> ←
@@ -194,6 +195,7 @@ function renderMain(store, reviews) {
     <h2 style="font-size:19px;font-weight:700;margin:26px 0 12px;">
       ماذا قال العملاء عن ${esc(store.name)}؟</h2>
     ${revs}
+    </div>
     ${prose}`;
 }
 
@@ -278,6 +280,11 @@ async function main() {
     /* الجسم: نملأ الحاوية بالمحتوى المُسبق */
     page = page.replace('<div class="container" id="main">',
       '<div class="container" id="main">' + renderMain(store, rev));
+
+    /* اللودر الأصلي يظهر أسفل المحتوى المُسبق — نحذفه */
+    page = page.replace(
+      /<div class="loader"><div class="spinner"><\/div>جاري التحميل\.\.\.<\/div>/,
+      '');
 
     /* الروابط النسبية: الصفحة داخل /store/ */
     page = page
