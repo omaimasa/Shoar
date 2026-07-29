@@ -66,8 +66,24 @@ footer{border-top:1px solid var(--bd);padding:32px 24px;text-align:center;font-s
 footer a{color:var(--mu);margin:0 10px;}
 footer a:hover{color:var(--em);}
 </style>
+<style>
+.article-body table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14.5px;}
+.article-body th,.article-body td{border:1px solid var(--bd,#252a38);padding:11px 13px;text-align:right;vertical-align:top;}
+.article-body th{background:rgba(16,185,129,.09);color:var(--tx,#e2e8f0);font-weight:600;}
+.article-body td{color:#b3c2bb;line-height:1.85;}
+.faq-q{background:var(--sf,#161a24);border:1px solid var(--bd,#252a38);border-radius:12px;padding:16px 20px;margin-bottom:11px;}
+.faq-q h3{font-size:15.5px;color:var(--tx,#e2e8f0);margin:0 0 7px;font-weight:600;}
+.faq-q p{margin:0;font-size:14px;line-height:1.95;}
+.steps-ol{counter-reset:s;list-style:none;padding:0;margin:16px 0;}
+.steps-ol li{counter-increment:s;position:relative;padding-right:42px;margin-bottom:15px;line-height:1.95;}
+.steps-ol li::before{content:counter(s);position:absolute;right:0;top:1px;width:26px;height:26px;
+  border-radius:50%;background:rgba(16,185,129,.14);color:#34d399;font-weight:700;font-size:13px;
+  display:flex;align-items:center;justify-content:center;}
+</style>
+
 <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5301740696965181" crossorigin="anonymous"></script>
+<!-- AdSense يُفعّل بعد الموافقة -->
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "كيف تتحقق من مصداقية أي متجر إلكتروني قبل الشراء", "description": "دليل عملي للتحقق من مصداقية المتاجر الإلكترونية قبل الشراء — خطوات بسيطة تحمي فلوسك", "inLanguage": "ar", "author": {"@type": "Organization", "name": "شوركم"}, "publisher": {"@type": "Organization", "name": "شوركم", "logo": {"@type": "ImageObject", "url": "https://shoar.com.sa/shoarlogo.png"}}, "mainEntityOfPage": "https://shoar.com.sa/blog/how-to-verify-store-credibility.html", "datePublished": "2026-06-01", "dateModified": "2026-07-29"}</script>
 </head>
 <body>
 <nav class="nav">
@@ -86,7 +102,7 @@ footer a:hover{color:var(--em);}
   <div class="meta">بقلم فريق شوركم · يونيو 2026 · قراءة 4 دقائق</div>
   <div class="article-body">
     <p>التسوق الإلكتروني في السعودية نما بشكل كبير في السنوات الأخيرة، ومعه نمت أيضاً مشكلة المتاجر غير الموثوقة. كثير من المستهلكين مروا بتجربة دفعوا فيها أموالهم ولم يصلهم المنتج، أو وصلهم شيء مختلف تماماً عن الصورة.</p>
-    <p>السوال الأهم قبل أي عملية شراء: <strong>كيف أعرف إن هذا المتجر موثوق؟</strong></p>
+    <p>السؤال الأهم قبل أي عملية شراء: <strong>كيف أعرف إن هذا المتجر موثوق؟</strong></p>
 
     <h2>١. ابحث عن اسم المتجر على شوركم</h2>
     <p>أسهل خطوة وأسرعها. ادخل على <a href="/">shoar.com.sa</a> واكتب اسم المتجر في أداة التحليل. ستحصل على تقرير فوري يتضمن:</p>
@@ -110,26 +126,80 @@ footer a:hover{color:var(--em);}
     <p>المتاجر الموثوقة لديها سجل تجاري واضح يمكن التحقق منه عبر موقع وزارة التجارة السعودية. وجود السجل التجاري لا يعني تلقائياً أن المتجر ممتاز، لكن غيابه إشارة تحذير واضحة.</p>
 
     <h2>٤. اختبر خدمة العملاء قبل الشراء</h2>
-    <p>أرسل رسالة على واتساب أو إنستاقرام واسأل سوالاً بسيطاً عن منتج. الرد السريع والواضح والمحترم دليل جيد على جدية المتجر. التأخر أو الرد الغامض أو عدم الرد إشارة تستحق الانتباه.</p>
+    <p>أرسل رسالة على واتساب أو إنستاقرام واسأل سؤالاً بسيطاً عن منتج. الرد السريع والواضح والمحترم دليل جيد على جدية المتجر. التأخر أو الرد الغامض أو عدم الرد إشارة تستحق الانتباه.</p>
 
     <h2>٥. ابحث عن المتجر على السوشيال ميديا</h2>
     <p>ابحث عن اسم المتجر على تويتر وإنستاقرام. ستجد في الغالب تجارب حقيقية من مشترين سابقين لم يكتبوها في موقع المتجر. الشكاوى المتكررة عن نفس المشكلة تستحق أن تأخذها بجدية.</p>
 
+    
+    <h2>٦. طريقة الدفع تكشف الكثير</h2>
+    <p>وسيلة الدفع التي يطلبها المتجر من أوضح مؤشرات جديته. المتجر النظامي مسجّل لدى
+    بوابة دفع، والبوابة نفسها تطلب منه سجلاً تجارياً وحساباً بنكياً باسم المنشأة. لهذا
+    فإن وجود بوابة دفع حقيقية يعني أن جهة ثالثة راجعت أوراقه قبلك.</p>
+    <table>
+      <thead><tr><th>الوسيلة</th><th>مستوى الأمان</th><th>ملاحظة</th></tr></thead>
+      <tbody>
+        <tr><td>مدى · Apple Pay</td><td>مرتفع</td><td>تمر عبر بوابة دفع مرخّصة، وتقدر تعترض على العملية عبر بنكك</td></tr>
+        <tr><td>بطاقة ائتمانية</td><td>مرتفع</td><td>تتيح استرداد المبلغ (Chargeback) عند عدم الاستلام</td></tr>
+        <tr><td>تابي · تمارا</td><td>مرتفع</td><td>جهات مرخّصة من ساما، ولها آلية شكاوى خاصة</td></tr>
+        <tr><td>الدفع عند الاستلام</td><td>متوسط</td><td>آمن مالياً، لكن لا يحميك من اختلاف المنتج عن الوصف</td></tr>
+        <tr><td>تحويل بنكي لحساب <strong>شخصي</strong></td><td>منخفض جداً</td><td>لا يوجد أي غطاء نظامي — تجنّبه تماماً</td></tr>
+      </tbody>
+    </table>
+    <p>إذا رفض المتجر كل الوسائل النظامية وأصرّ على التحويل لحساب باسم شخص، فهذي وحدها
+    سبب كافٍ للانسحاب — بغضّ النظر عن جودة صوره أو عدد متابعيه.</p>
+
+    <h2>٧. جدول سريع: متى تكمّل ومتى تنسحب</h2>
+    <table>
+      <thead><tr><th>إشارة اطمئنان ✓</th><th>إشارة تحذير ✗</th></tr></thead>
+      <tbody>
+        <tr><td>سجل تجاري معلن ورقم موحّد</td><td>لا توجد أي بيانات هوية للمتجر</td></tr>
+        <tr><td>سياسة إرجاع مكتوبة ومدّتها واضحة</td><td>«لا يوجد إرجاع أو استبدال» بلا تفصيل</td></tr>
+        <tr><td>تقييمات موزّعة على أشهر</td><td>عشرات التقييمات في يوم واحد</td></tr>
+        <tr><td>ردود علنية على الشكاوى</td><td>حذف التعليقات أو إغلاقها</td></tr>
+        <tr><td>صور منتجات خاصة به</td><td>صور منسوخة من مواقع أجنبية</td></tr>
+        <tr><td>بوابة دفع مرخّصة</td><td>تحويل لحساب شخصي فقط</td></tr>
+      </tbody>
+    </table>
+
+    <h2>٨. وقعت في مشكلة؟ التصعيد بالترتيب</h2>
+    <p>لو دفعت ولم يصلك المنتج أو وصل مختلفاً، لا تكتفِ بالمراسلة. اتبع هذا الترتيب:</p>
+    <ol class="steps-ol">
+      <li><strong>وثّق كل شيء أولاً.</strong> لقطات شاشة للإعلان والسعر، إثبات الدفع،
+      وكامل المحادثة مع المتجر. الوثائق هي ما يبني قضيتك لاحقاً.</li>
+      <li><strong>راسل المتجر رسمياً</strong> وحدّد مهلة واضحة (٤٨ ساعة مثلاً) واذكر أنك
+      ستصعّد بعدها. كثير من الحالات تُحل عند هذه النقطة.</li>
+      <li><strong>قدّم شكوى عبر منصة «مستهلك»</strong> التابعة لوزارة التجارة، أو عبر
+      تطبيقها. الشكوى مجانية وتصل المتجر رسمياً.</li>
+      <li><strong>تواصل مع بنكك</strong> إن كان الدفع ببطاقة، واطلب الاعتراض على العملية
+      مرفقاً بالوثائق.</li>
+      <li><strong>اكتب تقييمك على شوركم.</strong> تجربتك — إيجابية كانت أو سلبية — توفّر
+      على غيرك الوقوع في نفس الموقف.</li>
+    </ol>
+
+    <h2>أسئلة شائعة</h2>
+    <div class="faq-q"><h3>هل وجود السجل التجاري يكفي لأثق بالمتجر؟</h3>
+    <p>لا. السجل التجاري يثبت أن المنشأة مسجّلة نظامياً وأن خلفها جهة يمكن مساءلتها،
+    لكنه لا يقول شيئاً عن جودة المنتج ولا عن التزام المتجر بمواعيد التوصيل. اعتبره
+    شرطاً ضرورياً لا كافياً — وأكمله بقراءة التقييمات.</p></div>
+
+    <div class="faq-q"><h3>متجر تقييمه ٥ من ٥ — هل هذا جيد؟</h3>
+    <p>يعتمد على عدد التقييمات وتوزيعها. متوسط ٥ من تقييمين لا يعني شيئاً إحصائياً.
+    متجر بمتوسط ٤.٣ من ٦٠ تقييماً أوثق بكثير. والكمال المطلق نفسه مريب: أي متجر يعمل
+    بحجم حقيقي لا بد أن يواجه شكوى أو اثنتين.</p></div>
+
+    <div class="faq-q"><h3>المتجر جديد وما عنده تقييمات — أتجنّبه؟</h3>
+    <p>ليس بالضرورة. كل متجر ناجح بدأ بلا تقييمات. لكن مع المتاجر الجديدة ضاعف الحذر
+    في وسيلة الدفع تحديداً: اختر الدفع عند الاستلام أو بطاقة تتيح الاعتراض، وابدأ بطلب
+    صغير قبل الطلبات الكبيرة.</p></div>
+
+    <div class="faq-q"><h3>كم يستغرق التحقق فعلياً؟</h3>
+    <p>البحث على شوركم وقراءة أبرز التقييمات: دقيقتان. إضافة التحقق من السجل التجاري
+    ورسالة اختبار لخدمة العملاء: خمس دقائق. مقابل مبلغ قد تخسره بالكامل، هذي أرخص
+    خمس دقائق تصرفها.</p></div>
+
     <div class="callout"><p>قبل ما تدفع، خذ دقيقتين وتحقق. أداة تحليل المصداقية على شوركم مجانية وتعطيك صورة كاملة في ثواني. قرارك الشرائي يستحق هذه الدقيقتين.</p></div>
-
-  <!-- ═══ إعلان Google AdSense ═══ -->
-  <div class="ad-wrap" style="width:100%;margin:36px auto;">
-    <div style="font-size:10px;color:var(--mu);text-align:center;margin-bottom:6px;letter-spacing:1px;">إعلان</div>
-    <ins class="adsbygoogle"
-         style="display:block;min-height:100px;"
-         data-ad-client="ca-pub-5301740696965181"
-         data-ad-slot="XXXXXXXXXX"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-  </div>
-
-<div class="cta-box">
+  <div class="cta-box">
   <h3>جاهز تتحقق من مصداقية أي متجر؟</h3>
   <p>أداة التحليل مجانية وتعطيك نتيجة في ثواني</p>
   <a href="/" class="cta-btn">جرّب أداة التحليل الآن ←</a>
