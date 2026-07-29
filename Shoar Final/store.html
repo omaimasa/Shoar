@@ -180,13 +180,15 @@ textarea.inp{resize:vertical;min-height:80px;}
       <div class="auth-icon">🔐</div>
       <div class="auth-title">رمز التحقق</div>
       <div class="auth-sub" id="otpSub">أُرسل رمز SMS إلى جوالك</div>
-      <div class="otp-row">
-        <input class="otp-b" id="d1" style="direction:ltr;" type="tel" maxlength="1" autocomplete="one-time-code" oninput="otpIn(this,'d2')" onkeydown="otpDel(event,this,'')">
-        <input class="otp-b" id="d2" type="tel" maxlength="1" autocomplete="one-time-code" oninput="otpIn(this,'d3')" onkeydown="otpDel(event,this,'d1')">
-        <input class="otp-b" id="d3" type="tel" maxlength="1" autocomplete="one-time-code" oninput="otpIn(this,'d4')" onkeydown="otpDel(event,this,'d2')">
-        <input class="otp-b" id="d4" type="tel" maxlength="1" autocomplete="one-time-code" oninput="otpIn(this,'d5')" onkeydown="otpDel(event,this,'d3')">
-        <input class="otp-b" id="d5" type="tel" maxlength="1" autocomplete="one-time-code" oninput="otpIn(this,'d6')" onkeydown="otpDel(event,this,'d4')">
-        <input class="otp-b" id="d6" type="tel" maxlength="1" autocomplete="one-time-code" oninput="otpIn(this,'')"   onkeydown="otpDel(event,this,'d5')">
+      <!-- hidden single input for iOS/Android OTP autofill -->
+      <input id="otpHidden" type="tel" inputmode="numeric" autocomplete="one-time-code" maxlength="6" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;" oninput="otpHiddenIn(this)">
+      <div class="otp-row" onclick="document.getElementById('otpHidden').focus()">
+        <input class="otp-b" id="d1" style="direction:ltr;" type="tel" maxlength="1" oninput="otpIn(this,'d2')" onkeydown="otpDel(event,this,'')" onfocus="document.getElementById('otpHidden').focus()">
+        <input class="otp-b" id="d2" type="tel" maxlength="1" oninput="otpIn(this,'d3')" onkeydown="otpDel(event,this,'d1')" onfocus="document.getElementById('otpHidden').focus()">
+        <input class="otp-b" id="d3" type="tel" maxlength="1" oninput="otpIn(this,'d4')" onkeydown="otpDel(event,this,'d2')" onfocus="document.getElementById('otpHidden').focus()">
+        <input class="otp-b" id="d4" type="tel" maxlength="1" oninput="otpIn(this,'d5')" onkeydown="otpDel(event,this,'d3')" onfocus="document.getElementById('otpHidden').focus()">
+        <input class="otp-b" id="d5" type="tel" maxlength="1" oninput="otpIn(this,'d6')" onkeydown="otpDel(event,this,'d4')" onfocus="document.getElementById('otpHidden').focus()">
+        <input class="otp-b" id="d6" type="tel" maxlength="1" oninput="otpIn(this,'')"   onkeydown="otpDel(event,this,'d5')" onfocus="document.getElementById('otpHidden').focus()">
       </div>
       <div class="err-msg" id="otpErr" style="display:none;text-align:center;margin-top:6px;"></div>
       <div class="resend-row" id="resendRow">إعادة الإرسال بعد <span id="timerN" style="color:var(--em);font-weight:600;">60</span> ثانية</div>
@@ -457,22 +459,21 @@ async function sendOTP(){
   setTimeout(()=>document.getElementById('d1').focus(),100);
 }
 
-function otpIn(el,nextId){
-  const val=el.value.replace(/\D/g,'');
-  if(val.length>1){
-    // autofill paste: distribute digits across all boxes
-    const ids=['d1','d2','d3','d4','d5','d6'];
-    for(let i=0;i<ids.length;i++){
-      const box=document.getElementById(ids[i]);
-      box.value=val[i]||'';
-      box.classList.toggle('done',!!box.value);
-    }
-    document.getElementById('d6').focus();
-    if(val.length>=6)verifyOTP();
-    return;
-  }
+function otpHiddenIn(el){
+  const val=el.value.replace(/\D/g,'').slice(0,6);
   el.value=val;
+  const ids=['d1','d2','d3','d4','d5','d6'];
+  ids.forEach((id,i)=>{
+    const box=document.getElementById(id);
+    box.value=val[i]||'';
+    box.classList.toggle('done',!!box.value);
+  });
+  if(val.length===6)verifyOTP();
+}
+function otpIn(el,nextId){
+  el.value=el.value.replace(/\D/g,'');
   el.classList.toggle('done',!!el.value);
+  document.getElementById('otpHidden').value=getOTP();
   if(el.value&&nextId)document.getElementById(nextId).focus();
   if(getOTP().length===6)verifyOTP();
 }
