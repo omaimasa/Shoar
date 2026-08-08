@@ -378,14 +378,9 @@ const CEM={store:'م',product:'ن',service:'خ',specialist:'ا',other:'أ'};
 
 const cat = new URLSearchParams(location.search).get('cat');
 
-/* الرابط المعياري حسب الفئة */
-(function(){
-  const canon = document.getElementById('canonLink');
-  if (!canon) return;
-  canon.href = cat
-    ? 'https://shoar.com.sa/pages/category.html?cat=' + encodeURIComponent(cat)
-    : 'https://shoar.com.sa/pages/category.html';
-})();
+/* الرابط المعياري ثابت على الصفحة الرئيسية للفئات.
+   كل نسخ ?cat= تُدمج على category.html البارة لتفادي تعارض المحتوى المكرر
+   في Search Console. لا نغيّر canonical ديناميكياً — الإشارة البارة في <head> هي المعتمدة. */
 
 /* إظهار دليل الفئة النشطة فقط */
 function applyGuideFilter(){
