@@ -82,6 +82,11 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .crit-fill{height:100%;border-radius:2px;}
 .crit-val{font-size:10px;color:var(--mu);min-width:28px;}
 .ai-note{font-size:10px;color:var(--mu);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);}
+.ai-analyze-btn{display:block;width:100%;margin-top:14px;padding:12px 16px;background:var(--em);color:#0f1117;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.ai-analyze-btn:hover{background:var(--em-l);}
+.ai-analyze-btn:disabled{opacity:.6;cursor:default;}
+.trust-empty{text-align:center;}
+.trust-empty .ai-hint{font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:6px;}
 .sec-title{font-size:16px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;}
 .btn-em{background:var(--em);color:#0f1117;}.btn-em:hover{background:var(--em-l);}
@@ -354,7 +359,9 @@ async function loadStore(id) {
     });
   }
 
-  const trustHTML = tscore!==null&&tscore!==undefined ? `
+  const hasTrust = tscore!==null && tscore!==undefined;
+  const trustAge = store.trust_updated_at ? daysSince(store.trust_updated_at) : null;
+  const trustHTML = hasTrust ? `
     <div class="trust-section">
       <div class="trust-header">
         <div class="trust-title">✦ تقرير المصداقية</div>
@@ -366,7 +373,14 @@ async function loadStore(id) {
         return `<div class="crit-row"><div style="flex:1"><div class="crit-name">${c.name}</div><div class="crit-note">${c.note}</div></div><div class="crit-bar"><div class="crit-fill" style="width:${pct}%;background:${bc}"></div></div><span class="crit-val">${c.score}/${c.weight}</span></div>`;
       }).join('')}
       ${store.trust_data?.summary?`<div class="ai-note">💡 ${store.trust_data.summary}</div>`:''}
-    </div>` : '';
+      <button class="ai-analyze-btn" onclick="runStoreTrustCheck('${store.id}')">↻ إعادة التحليل بالذكاء الاصطناعي</button>
+      <div class="ai-note" style="border:none;padding-top:6px;margin-top:8px;">${trustAge!==null?`آخر تحليل منذ ${toAr(trustAge)} يوم · `:''}مدعوم بالذكاء الاصطناعي</div>
+    </div>` : `
+    <div class="trust-section trust-empty">
+      <div class="trust-title" style="margin-bottom:8px;">✦ تحليل المصداقية بالذكاء الاصطناعي</div>
+      <div class="ai-hint">لم يُحلَّل هذا المتجر بعد. احصل على تقييم مصداقية فوري مبني على معلومات المتجر وتقييمات العملاء.</div>
+      <button class="ai-analyze-btn" onclick="runStoreTrustCheck('${store.id}')">✦ حلّل الآن بالذكاء الاصطناعي</button>
+    </div>`;
 
   const reviewsHTML = reviews?.length ? reviews.map(rv=>`
     <div class="review-card">
@@ -432,6 +446,86 @@ async function loadStore(id) {
     </div>
     ${reviewsHTML}
   `;
+}
+
+/* ── AI Trust Check ── */
+function daysSince(d){ return Math.floor((Date.now()-new Date(d))/86400000); }
+
+// استدعاء الذكاء الاصطناعي عبر Supabase Edge Function (آمن — المفتاح على الخادم)
+async function callAI(prompt){
+  const res = await fetch(`${SUPA_URL}/functions/v1/analyze`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPA_KEY}`,'apikey':SUPA_KEY},
+    body:JSON.stringify({ prompt })
+  });
+  if(!res.ok){ throw new Error(`Edge Function ${res.status}: ${await res.text()}`); }
+  return res.json();
+}
+
+// تشغيل تحليل المصداقية لهذا المتجر وحفظه في Supabase
+async function runStoreTrustCheck(storeId){
+  const store = currentStore;
+  if(!store) return;
+
+  // حالة التحميل على كل أزرار التحليل
+  document.querySelectorAll('.ai-analyze-btn').forEach(b=>{ b.disabled=true; b.textContent='⟳ جاري التحليل...'; });
+
+  // اجمع آخر التقييمات المعتمدة
+  const { data: reviews } = await db.from('reviews')
+    .select('rating, body, author_name, created_at')
+    .eq('store_id', storeId).eq('status','approved').limit(20);
+
+  const reviewTexts = (reviews||[]).map(r=>`تقييم ${r.rating}/5: "${r.body}" — ${r.author_name}`).join('\n');
+
+  const prompt = `أنت محلل مصداقية متاجر إلكترونية سعودية. حلّل هذا المتجر وأعطِ تقرير JSON فقط بدون أي نص إضافي.
+
+بيانات المتجر:
+- الاسم: ${store.name}
+- الفئة: ${store.category}
+- الوصف: ${store.description || 'غير متوفر'}
+- حساب إنستاجرام: ${store.ig_handle || 'غير متوفر'}
+- الموقع الإلكتروني: ${store.website || 'غير متوفر'}
+- عدد التقييمات: ${store.review_count || 0}
+- متوسط التقييم: ${store.avg_rating || 0}/5
+
+آخر التقييمات:
+${reviewTexts || 'لا توجد تقييمات بعد'}
+
+أعطِ JSON بهذا الشكل بالضبط:
+{
+  "score": <رقم من 0 إلى 100>,
+  "criteria": [
+    {"name": "وجود معلومات التواصل", "weight": 20, "score": <0-20>, "note": "<ملاحظة قصيرة>"},
+    {"name": "وضوح الوصف والتخصص", "weight": 20, "score": <0-20>, "note": "<ملاحظة قصيرة>"},
+    {"name": "عدد وجودة التقييمات", "weight": 25, "score": <0-25>, "note": "<ملاحظة قصيرة>"},
+    {"name": "مصداقية التقييمات", "weight": 25, "score": <0-25>, "note": "<ملاحظة قصيرة>"},
+    {"name": "اتساق المعلومات", "weight": 10, "score": <0-10>, "note": "<ملاحظة قصيرة>"}
+  ],
+  "summary": "<جملة واحدة ملخص>"
+}`;
+
+  try {
+    const data = await callAI(prompt);
+    const raw  = data.content?.[0]?.text || '';
+    const jm   = raw.match(/\{[\s\S]*\}/);
+    if(!jm) throw new Error('no json');
+    const result = JSON.parse(jm[0]);
+    const score  = Math.min(100, Math.max(0, Math.round(result.score)));
+
+    // احفظ النتيجة في Supabase
+    await db.from('stores').update({
+      trust_score: score,
+      trust_data: result,
+      trust_updated_at: new Date().toISOString()
+    }).eq('id', storeId);
+
+    showToast('✓ تم التحليل بنجاح');
+    loadStore(storeId); // أعد التحميل لعرض التقرير المحدّث
+  } catch(e){
+    console.error(e);
+    showToast('❌ تعذّر التحليل، حاول مجدداً', 'var(--rd)');
+    loadStore(storeId); // أرجع الأزرار لحالتها
+  }
 }
 
 /* ── Review ── */
