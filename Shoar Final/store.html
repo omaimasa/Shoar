@@ -304,13 +304,19 @@ function renderNav(name) {
     <div class="user-chip"><span class="online"></span>${name}</div>`;
 }
 
-async function loadStore(id) {
+async function loadStore(id, preTrust=null) {
   const [{ data:store, error:storeErr },{ data:reviews }] = await Promise.all([
     db.from('stores_with_stats').select('*').eq('id',id).single(),
     db.from('reviews').select('*').eq('store_id',id).eq('status','approved').order('created_at',{ascending:false})
   ]);
   if (storeErr) console.error('Store load error:', storeErr);
   if (!store){ liveEl().innerHTML='<div class="empty">المتجر غير موجود</div>'; return; }
+  // ادمج نتيجة تحليل حديثة من الذاكرة إن لم تكن محفوظة بعد في قاعدة البيانات
+  if (preTrust && (store.trust_score===null || store.trust_score===undefined)) {
+    store.trust_score = preTrust.trust_score;
+    store.trust_data = preTrust.trust_data;
+    store.trust_updated_at = preTrust.trust_updated_at;
+  }
   currentStore = store;
   document.title = store.name + ' — تقييمات وآراء | Shoar';
   
@@ -491,15 +497,20 @@ async function runStoreTrustCheck(storeId){
 آخر التقييمات:
 ${reviewTexts || 'لا توجد تقييمات بعد'}
 
+تعليمات مهمة حول التوثيق الرسمي:
+- قيّم وجود سجل تجاري أو وثيقة عمل حر أو تسجيل في منصة "معروف" بناءً على المعلومات المتاحة ومعرفتك بالمتجر.
+- إذا لم تتأكد، اكتب في الملاحظة: "غير مؤكد — يتطلب تحقق يدوي عبر معروف (maroof.sa) أو المركز السعودي للأعمال" ولا تفترض وجود التوثيق أو غيابه بدون دليل.
+- المتاجر المعروفة والمسجلة رسمياً تستحق درجة عالية في هذا المعيار، والمتاجر مجهولة الهوية بلا أي أثر رقمي تستحق درجة منخفضة.
+
 أعطِ JSON بهذا الشكل بالضبط:
 {
   "score": <رقم من 0 إلى 100>,
   "criteria": [
-    {"name": "وجود معلومات التواصل", "weight": 20, "score": <0-20>, "note": "<ملاحظة قصيرة>"},
-    {"name": "وضوح الوصف والتخصص", "weight": 20, "score": <0-20>, "note": "<ملاحظة قصيرة>"},
+    {"name": "التوثيق الرسمي (سجل تجاري / عمل حر / معروف)", "weight": 25, "score": <0-25>, "note": "<حالة التوثيق بصراحة>"},
+    {"name": "الحضور الرقمي والتواصل", "weight": 15, "score": <0-15>, "note": "<ملاحظة قصيرة>"},
     {"name": "عدد وجودة التقييمات", "weight": 25, "score": <0-25>, "note": "<ملاحظة قصيرة>"},
-    {"name": "مصداقية التقييمات", "weight": 25, "score": <0-25>, "note": "<ملاحظة قصيرة>"},
-    {"name": "اتساق المعلومات", "weight": 10, "score": <0-10>, "note": "<ملاحظة قصيرة>"}
+    {"name": "مصداقية التقييمات", "weight": 20, "score": <0-20>, "note": "<ملاحظة قصيرة>"},
+    {"name": "اتساق ووضوح المعلومات", "weight": 15, "score": <0-15>, "note": "<ملاحظة قصيرة>"}
   ],
   "summary": "<جملة واحدة ملخص>"
 }`;
@@ -512,15 +523,23 @@ ${reviewTexts || 'لا توجد تقييمات بعد'}
     const result = JSON.parse(jm[0]);
     const score  = Math.min(100, Math.max(0, Math.round(result.score)));
 
-    // احفظ النتيجة في Supabase
-    await db.from('stores').update({
-      trust_score: score,
-      trust_data: result,
-      trust_updated_at: new Date().toISOString()
-    }).eq('id', storeId);
+    // احفظ النتيجة عبر دالة RPC آمنة (تتجاوز RLS دون فتح ثغرة)
+    const { error: saveErr } = await db.rpc('save_trust_analysis', {
+      p_store_id: storeId,
+      p_score: score,
+      p_data: result
+    });
+    if (saveErr) console.error('save_trust_analysis:', saveErr);
+
+    // حدّث النسخة في الذاكرة فوراً (يضمن ظهور التقرير حتى لو تأخّر الحفظ)
+    if (currentStore && currentStore.id === storeId) {
+      currentStore.trust_score = score;
+      currentStore.trust_data = result;
+      currentStore.trust_updated_at = new Date().toISOString();
+    }
 
     showToast('✓ تم التحليل بنجاح');
-    loadStore(storeId); // أعد التحميل لعرض التقرير المحدّث
+    loadStore(storeId, { trust_score: score, trust_data: result, trust_updated_at: new Date().toISOString() });
   } catch(e){
     console.error(e);
     showToast('❌ تعذّر التحليل، حاول مجدداً', 'var(--rd)');
