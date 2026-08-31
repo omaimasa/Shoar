@@ -38,11 +38,18 @@ serve(async (req) => {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
+        // يفعّل أداة web_fetch (beta) — تتيح لـ Claude فتح موقع المتجر
+        "anthropic-beta": "web-fetch-2025-09-10",
       },
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 1000,
+        max_tokens: 1500,
         messages: [{ role: "user", content: prompt }],
+        // أداة فتح المواقع: تسمح لـ Claude بفتح رابط المتجر المذكور في
+        // الـ prompt وقراءة الفوتر (سجل تجاري / وثيقة عمل حر / معروف)
+        tools: [
+          { type: "web_fetch_20250910", name: "web_fetch", max_uses: 3 },
+        ],
       }),
     });
 
