@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<link rel="icon" type="image/png" href="shoarlogo.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>هذا متجري — استلام ملف المنشأة | Shoar</title>
+<meta name="description" content="استلم ملف منشأتك على شوركم: رد رسمي على التقييمات، تصحيح البيانات، والتظلّم من مؤشر اكتمال المعلومات.">
+<link rel="canonical" href="https://shoar.com.sa/claim.html">
+<meta name="robots" content="index,follow">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#0f1117;--sf:#161a24;--sf2:#1c212e;--bd:#252a38;--bd2:#2f3648;--em:#10b981;--em-l:#34d399;--em-d:rgba(16,185,129,.12);--tx:#e2e8f0;--mu:#64748b;--dm:#3a4152;--rd:#f43f5e;--r:14px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--tx);line-height:1.8;-webkit-font-smoothing:antialiased;background-image:radial-gradient(circle,rgba(255,255,255,.04) 1px,transparent 1px);background-size:28px 28px;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:1px solid var(--bd);background:rgba(15,17,23,.9);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;}
+.back{font-size:13px;color:var(--mu);text-decoration:none;transition:color .2s;}
+.back:hover{color:var(--em);}
+.container{max-width:720px;margin:0 auto;padding:48px 24px 80px;}
+h1{font-size:30px;font-weight:700;margin-bottom:10px;}
+.lead{font-size:14.5px;color:#a0a098;line-height:1.95;margin-bottom:26px;max-width:62ch;}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:24px;margin-bottom:18px;}
+h2{font-size:16px;font-weight:600;color:var(--em);margin-bottom:12px;}
+.rights{display:grid;gap:10px;margin-bottom:4px;}
+.right-item{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:#a0a098;line-height:1.8;}
+.right-item span:first-child{color:var(--em);flex:none;}
+.store-strip{display:flex;align-items:center;gap:14px;background:var(--sf2);border:1px solid var(--bd2);border-radius:12px;padding:14px 16px;margin-bottom:18px;}
+.store-strip .nm{font-size:15px;font-weight:600;}
+.store-strip .ct{font-size:12px;color:var(--mu);}
+.fg{margin-bottom:15px;}
+.lb{display:block;font-size:12px;font-weight:500;color:var(--mu);margin-bottom:5px;}
+.hint{font-size:11px;color:var(--mu);margin-top:5px;line-height:1.6;}
+.inp{width:100%;background:var(--sf2);border:1px solid var(--bd2);border-radius:10px;padding:10px 13px;color:var(--tx);font-family:inherit;font-size:14px;outline:none;direction:rtl;transition:border-color .2s;}
+.inp:focus{border-color:var(--em);}
+textarea.inp{resize:vertical;min-height:80px;}
+select.inp{cursor:pointer;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;}
+.btn-em{background:var(--em);color:#0f1117;}.btn-em:hover{background:var(--em-l);}
+.btn-em:disabled{opacity:.6;cursor:default;}
+.btn-out{background:transparent;border:1px solid var(--bd2);color:var(--mu);}.btn-out:hover{border-color:var(--em);color:var(--em);}
+.legal{font-size:11.5px;color:var(--mu);line-height:1.85;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);}
+.legal a{color:var(--em);text-decoration:none;}
+.auth-gate{text-align:center;padding:8px 0 4px;}
+.auth-gate p{font-size:13.5px;color:#a0a098;line-height:1.85;margin-bottom:14px;}
+.done-box{text-align:center;padding:20px 0;}
+.done-box .ic{font-size:44px;margin-bottom:10px;}
+.done-box h2{font-size:19px;color:var(--tx);margin-bottom:8px;}
+.done-box p{font-size:13.5px;color:#a0a098;line-height:1.9;max-width:46ch;margin:0 auto 8px;}
+.user-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:100px;background:var(--sf);border:1px solid var(--bd2);font-size:12px;color:var(--mu);}
+.online{width:6px;height:6px;border-radius:50%;background:var(--em);}
+/* Auth modal */
+.ov{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.84);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.ov.open{opacity:1;pointer-events:all;}
+.modal{background:var(--sf);border:1px solid var(--bd2);border-radius:20px;padding:28px;width:100%;max-width:400px;max-height:92vh;overflow-y:auto;}
+.mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.xb{background:var(--sf2);border:1px solid var(--bd2);color:var(--mu);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.xb:hover{color:var(--tx);}
+.auth-step{display:none;}.auth-step.active{display:block;}
+.auth-icon{font-size:38px;text-align:center;margin-bottom:8px;}
+.auth-title{font-size:19px;font-weight:700;text-align:center;margin-bottom:5px;}
+.auth-sub{font-size:13px;color:var(--mu);text-align:center;margin-bottom:20px;line-height:1.6;}
+.phone-row{display:flex;gap:8px;}
+.code-inp{background:var(--sf2);border:1px solid var(--bd2);border-radius:10px;padding:10px 12px;color:var(--tx);font-family:inherit;font-size:14px;outline:none;width:80px;text-align:center;direction:ltr;transition:border-color .2s;}
+.code-inp:focus{border-color:var(--em);}
+.otp-row{display:flex;gap:9px;justify-content:center;margin:6px 0 4px;}
+.otp-b{width:46px;height:52px;background:var(--sf2);border:2px solid var(--bd2);border-radius:11px;text-align:center;font-size:22px;font-weight:700;color:var(--tx);outline:none;font-family:inherit;direction:ltr;transition:border-color .2s;}
+.otp-b:focus,.otp-b.done{border-color:var(--em);}
+.resend-row{text-align:center;font-size:13px;color:var(--mu);margin-top:8px;}
+.resend-btn{color:var(--em);background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;}
+.err-msg{font-size:11px;color:var(--rd);margin-top:4px;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);padding:11px 22px;border-radius:100px;font-size:13px;font-weight:500;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;color:#0f1117;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+footer{text-align:center;padding:32px;border-top:1px solid var(--bd);font-size:12px;color:var(--mu);}
+footer a{color:var(--em);text-decoration:none;}
+@media(max-width:640px){nav{padding:12px 16px;}.container{padding:24px 16px 60px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html"><img src="shoarlogo.png" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'شوركم'}))" alt="Shoar" style="height:30px;width:auto;display:block;"></a>
+  <div id="navUser"><a class="back" href="index.html">→ الرئيسية</a></div>
+</nav>
+
+<div class="container">
+  <h1>هذا متجري</h1>
+  <p class="lead">
+    استلام ملف المنشأة يمنح صاحبها صلاحية الرد رسمياً على ما يُنشر عنها وتصحيح بياناتها.
+    شوركم لا يحذف تقييماً سلبياً صحيحاً بناءً على طلب المنشأة ولا مقابل أي منفعة، لكنه يضمن لها
+    أن يظهر ردّها في الموضع نفسه الذي ظهر فيه التقييم.
+  </p>
+
+  <div id="storeStrip"></div>
+
+  <div class="card">
+    <h2>ما الذي يتيحه استلام الملف</h2>
+    <div class="rights">
+      <div class="right-item"><span>◆</span><span><strong>رد رسمي واحد على كل تقييم</strong> يظهر أسفله مباشرة باسم المنشأة، ويمكن تعديله لاحقاً.</span></div>
+      <div class="right-item"><span>◆</span><span><strong>تصحيح بيانات الملف</strong> — الاسم والفئة والموقع وحسابات التواصل ووصف النشاط.</span></div>
+      <div class="right-item"><span>◆</span><span><strong>التظلّم من مؤشر اكتمال المعلومات</strong> ورفع درجته باستكمال البيانات والتوثيق.</span></div>
+      <div class="right-item"><span>◆</span><span><strong>الإبلاغ عن تقييم مخالف</strong> ومتابعة قرار المراجعة خلال ٧٢ ساعة.</span></div>
+    </div>
+  </div>
+
+  <div class="card" id="formCard">
+    <h2>طلب استلام الملف</h2>
+
+    <div class="auth-gate" id="authGate">
+      <p>يبدأ الطلب بالتحقق من رقم جوالك، ليُربط الملف بحساب يمكنه الرد لاحقاً باسم المنشأة.</p>
+      <button class="btn btn-em" style="padding:12px 28px;" onclick="openOv('ovAuth')">التحقق برقم الجوال للمتابعة</button>
+    </div>
+
+    <div id="claimForm" style="display:none;">
+      <div class="fg">
+        <label class="lb">اسم مقدّم الطلب</label>
+        <input type="text" class="inp" id="cName" maxlength="80" placeholder="الاسم الثلاثي كما في الهوية">
+      </div>
+
+      <div class="fg">
+        <label class="lb">صفتك من المنشأة</label>
+        <select class="inp" id="cRole">
+          <option value="">اختر الصفة</option>
+          <option value="owner">المالك</option>
+          <option value="manager">المدير المسؤول</option>
+          <option value="authorized">مفوّض بموجب تفويض خطي</option>
+          <option value="marketing">مسؤول التسويق / خدمة العملاء</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label class="lb">رقم السجل التجاري أو وثيقة العمل الحر</label>
+        <input type="text" class="inp" id="cCr" maxlength="20" placeholder="مثال: 1010xxxxxx" style="direction:ltr;text-align:right;">
+        <div class="hint">يُستخدم للتحقق من صفتك فقط، ولا يُنشر على صفحة المتجر.</div>
+      </div>
+
+      <div class="fg">
+        <label class="lb">بريد إلكتروني رسمي</label>
+        <input type="email" class="inp" id="cEmail" maxlength="120" placeholder="name@yourstore.com" style="direction:ltr;text-align:right;">
+        <div class="hint">يُفضّل بريد على نطاق موقع المتجر — يختصر مدة التحقق.</div>
+      </div>
+
+      <div class="fg">
+        <label class="lb">رابط الدليل (اختياري)</label>
+        <input type="text" class="inp" id="cEvidence" maxlength="300" placeholder="رابط صفحتكم في معروف أو صفحة «من نحن»" style="direction:ltr;text-align:right;">
+      </div>
+
+      <div class="fg">
+        <label class="lb">ملاحظات (اختياري)</label>
+        <textarea class="inp" id="cNote" maxlength="800" placeholder="أي بيانات تودّون تصحيحها في الملف عند اعتماد الطلب."></textarea>
+      </div>
+
+      <button class="btn btn-em" style="width:100%;justify-content:center;padding:13px;" id="cBtn" onclick="submitClaim()">إرسال طلب الاستلام</button>
+
+      <div class="legal">
+        يُراجَع الطلب يدوياً خلال <strong>٥ أيام عمل</strong>، وقد نطلب مستنداً إضافياً للتحقق.
+        بإرسال الطلب تُقرّ بصحة البيانات وبأنك مخوّل بالتصرف نيابة عن المنشأة، وأن تقديم بيانات غير صحيحة
+        يُعرّض الطلب للرفض والحساب للتعليق. تُعالَج بياناتك وفق
+        <a href="pages/privacy.html">سياسة الخصوصية</a>، ويخضع استخدام الملف بعد اعتماده
+        <a href="pages/terms.html">للشروط والأحكام</a> — وعلى الأخص البند السادس المتعلق بحقوق المنشآت المدرجة.
+      </div>
+    </div>
+
+    <div id="claimDone" style="display:none;">
+      <div class="done-box">
+        <div class="ic">✅</div>
+        <h2>استُلم طلبك</h2>
+        <p>سنراجع الطلب خلال ٥ أيام عمل ونتواصل معك على البريد الذي أدخلته. عند الاعتماد ستظهر لك أزرار الرد أسفل كل تقييم في صفحة متجرك.</p>
+        <a class="btn btn-out" style="margin-top:10px;" id="backToStore" href="index.html">العودة لصفحة المتجر</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>ما لا يشمله استلام الملف</h2>
+    <div class="rights">
+      <div class="right-item"><span>—</span><span>حذف تقييم سلبي صحيح، أو تعديل متوسط التقييمات، أو إخفاء تقييم لأنه غير مُرضٍ.</span></div>
+      <div class="right-item"><span>—</span><span>الاطلاع على هوية أصحاب التقييمات أو أرقام تواصلهم.</span></div>
+      <div class="right-item"><span>—</span><span>رفع مؤشر اكتمال المعلومات دون استكمال البيانات والتوثيق فعلياً.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="ov" id="ovAuth">
+  <div class="modal" style="max-width:380px;">
+    <div class="auth-step active" id="stepPhone">
+      <div class="mhd"><div></div><button class="xb" onclick="closeOv('ovAuth')">✕</button></div>
+      <div class="auth-icon">📱</div>
+      <div class="auth-title">تحقق برقم جوالك</div>
+      <div class="auth-sub">سيصلك رمز التحقق برسالة SMS</div>
+      <div class="fg">
+        <div class="phone-row">
+          <input type="tel" class="code-inp" id="dialCode" value="+966" maxlength="5">
+          <input type="tel" class="inp" id="phoneNum" placeholder="05xxxxxxxx" maxlength="10" style="direction:ltr;text-align:right;" onkeydown="if(event.key==='Enter')sendOTP()">
+        </div>
+        <div class="err-msg" id="phoneErr" style="display:none;"></div>
+      </div>
+      <button class="btn btn-em" style="width:100%;justify-content:center;padding:12px;" id="sendBtn" onclick="sendOTP()">إرسال رمز التحقق</button>
+      <div style="text-align:center;font-size:11px;color:var(--mu);margin-top:10px;line-height:1.6;">
+        بإدخال رقمك توافق على استلام رسالة <strong>SMS</strong> للتحقق من هويتك.<br>
+        لن نرسل رسائل تسويقية · <a href="pages/privacy.html" style="color:var(--em)">سياسة الخصوصية</a>
+      </div>
+    </div>
+    <div class="auth-step" id="stepOTP">
+      <div class="mhd"><button class="btn btn-out" style="padding:5px 10px;font-size:12px;" onclick="goStep('stepPhone')">← رجوع</button><button class="xb" onclick="closeOv('ovAuth')">✕</button></div>
+      <div class="auth-icon">🔐</div>
+      <div class="auth-title">رمز التحقق</div>
+      <div class="auth-sub" id="otpSub">أُرسل رمز SMS إلى جوالك</div>
+      <div class="otp-row">
+        <input class="otp-b" id="d1" type="tel" maxlength="1" oninput="otpIn(this,'d2')" onkeydown="otpDel(event,this,'')"   autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d2" type="tel" maxlength="1" oninput="otpIn(this,'d3')" onkeydown="otpDel(event,this,'d1')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d3" type="tel" maxlength="1" oninput="otpIn(this,'d4')" onkeydown="otpDel(event,this,'d2')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d4" type="tel" maxlength="1" oninput="otpIn(this,'d5')" onkeydown="otpDel(event,this,'d3')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d5" type="tel" maxlength="1" oninput="otpIn(this,'d6')" onkeydown="otpDel(event,this,'d4')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+        <input class="otp-b" id="d6" type="tel" maxlength="1" oninput="otpIn(this,'')"   onkeydown="otpDel(event,this,'d5')" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" onpaste="otpPaste(event)">
+      </div>
+      <div class="err-msg" id="otpErr" style="display:none;text-align:center;margin-top:6px;"></div>
+      <div class="resend-row" id="resendRow">إعادة الإرسال بعد <span id="timerN" style="color:var(--em);font-weight:600;">60</span> ثانية</div>
+      <button class="btn btn-em" style="width:100%;justify-content:center;padding:12px;margin-top:14px;" id="verifyBtn" onclick="verifyOTP()">تحقق ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <p>© ٢٠٢٦ <a href="index.html">Shoar</a> · <a href="pages/terms.html">الشروط والأحكام</a> · <a href="pages/privacy.html">سياسة الخصوصية</a></p>
+</footer>
+
+<script>
+const SUPA_URL = 'https://tmkxsgbmrhssxajflgdq.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRta3hzZ2Jtcmhzc3hhamZsZ2RxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjQyNTksImV4cCI6MjA5MjQ0MDI1OX0.bkYGlcOPYcvPJL6PlRbDSuRdnybG2pzyhTTeXgOjmJE';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+let currentUser = null;
+let claimStore  = null;
+let otpPhone    = '';
+let resendInt   = null;
+
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[c]);
+}
+function openOv(id){ document.getElementById(id).classList.add('open'); }
+function closeOv(id){ document.getElementById(id).classList.remove('open'); }
+function goStep(id){ document.querySelectorAll('.auth-step').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function showToast(msg,bg='var(--em)'){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+
+async function init(){
+  const id = new URLSearchParams(location.search).get('id');
+
+  if (id){
+    const { data:store } = await db.from('stores').select('id,name,category,owner_id').eq('id',id).maybeSingle();
+    if (store){
+      claimStore = store;
+      document.getElementById('backToStore').href = 'store.html?id=' + encodeURIComponent(store.id);
+      document.getElementById('storeStrip').innerHTML = `
+        <div class="store-strip">
+          <div style="flex:1">
+            <div class="nm">${esc(store.name)}</div>
+            <div class="ct">${esc(store.category||'')}</div>
+          </div>
+          <a class="btn btn-out" href="store.html?id=${encodeURIComponent(store.id)}">عرض الملف</a>
+        </div>`;
+      if (store.owner_id){
+        document.getElementById('formCard').innerHTML =
+          '<h2>هذا الملف مستلَم</h2><p style="font-size:13.5px;color:#a0a098;line-height:1.9;">' +
+          'استلمت المنشأة ملفها على شوركم. إن كنت ترى أن الاستلام تم بغير حق، راسلنا على ' +
+          '<a href="mailto:hello@shoar.com.sa" style="color:var(--em)">hello@shoar.com.sa</a> ' +
+          'مرفقاً ما يثبت صفتك، ويُراجَع البلاغ خلال ٥ أيام عمل.</p>';
+        return;
+      }
+    }
+  } else {
+    document.getElementById('storeStrip').innerHTML = `
+      <div class="store-strip">
+        <div style="flex:1">
+          <div class="nm">لم تحدَّد المنشأة</div>
+          <div class="ct">افتح صفحة متجرك ثم اضغط «هذا متجري»، أو اكتب اسمه في الملاحظات أدناه.</div>
+        </div>
+        <a class="btn btn-out" href="index.html">تصفّح المتاجر</a>
+      </div>`;
+  }
+
+  const { data:{ session } } = await db.auth.getSession();
+  if (session){
+    currentUser = session.user;
+    const { data:p } = await db.from('profiles').select('display_name').eq('id',currentUser.id).single();
+    unlockForm(p?.display_name || '');
+  }
+}
+
+function unlockForm(name){
+  document.getElementById('authGate').style.display  = 'none';
+  document.getElementById('claimForm').style.display = 'block';
+  if (name) document.getElementById('cName').value = name;
+  document.getElementById('navUser').innerHTML =
+    '<div class="user-chip"><span class="online"></span>' + esc(name || 'موثّق') + '</div>';
+}
+
+/* ── Auth (نفس آلية التحقق المستخدمة في صفحة المتجر) ── */
+async function sendOTP(){
+  const code  = document.getElementById('dialCode').value.trim();
+  const local = document.getElementById('phoneNum').value.trim().replace(/^0/,'');
+  const err   = document.getElementById('phoneErr');
+  if(!local || local.length < 9){ err.textContent='رقم غير صحيح'; err.style.display='block'; return; }
+  err.style.display='none';
+  otpPhone = code + local;
+
+  const btn = document.getElementById('sendBtn'); btn.disabled=true; btn.textContent='جاري الإرسال...';
+  const { error } = await db.auth.signInWithOtp({ phone: otpPhone });
+  btn.disabled=false; btn.textContent='إرسال رمز التحقق';
+  if(error){ err.textContent = error.message || 'تعذّر الإرسال'; err.style.display='block'; return; }
+
+  document.getElementById('otpSub').textContent = 'أُرسل رمز إلى ' + otpPhone;
+  goStep('stepOTP'); startWebOTP(); startTimer();
+  setTimeout(()=>document.getElementById('d1').focus(),100);
+}
+
+const OTP_IDS = ['d1','d2','d3','d4','d5','d6'];
+function fillOTP(code){
+  code = String(code || '').replace(/\D/g,'').slice(0,6);
+  if(!code) return;
+  OTP_IDS.forEach(function(id,i){
+    const el=document.getElementById(id); if(!el) return;
+    el.value = code[i] || ''; el.classList.toggle('done', !!el.value);
+  });
+  const empty = OTP_IDS.find(function(id){ const el=document.getElementById(id); return el && !el.value; });
+  const f = document.getElementById(empty || 'd6'); if(f) f.focus();
+  if(code.length===6) verifyOTP();
+}
+function otpPaste(e){
+  const txt=(e.clipboardData||window.clipboardData).getData('text');
+  if(!txt) return; e.preventDefault(); fillOTP(txt);
+}
+let otpAbort=null;
+function startWebOTP(){
+  if(!('OTPCredential' in window)) return;
+  try{ if(otpAbort) otpAbort.abort(); }catch(e){}
+  otpAbort=new AbortController();
+  navigator.credentials.get({ otp:{transport:['sms']}, signal:otpAbort.signal })
+    .then(function(c){ if(c && c.code) fillOTP(c.code); })
+    .catch(function(){});
+}
+function stopWebOTP(){ try{ if(otpAbort) otpAbort.abort(); }catch(e){} otpAbort=null; }
+function otpIn(el,nextId){
+  const v=el.value.replace(/\D/g,'');
+  if(v.length>1){ fillOTP(v); return; }
+  el.value=v; el.classList.toggle('done',!!el.value);
+  if(el.value && nextId) document.getElementById(nextId).focus();
+  if(getOTP().length===6) verifyOTP();
+}
+function otpDel(e,el,prevId){ if(e.key==='Backspace' && !el.value && prevId) document.getElementById(prevId).focus(); }
+function getOTP(){ return OTP_IDS.map(id=>document.getElementById(id).value).join(''); }
+
+async function verifyOTP(){
+  stopWebOTP();
+  const token=getOTP();
+  const err=document.getElementById('otpErr');
+  if(token.length<6){ err.textContent='أدخل الرمز كاملاً'; err.style.display='block'; return; }
+  err.style.display='none';
+  const btn=document.getElementById('verifyBtn'); btn.disabled=true; btn.textContent='جاري التحقق...';
+  const { data, error } = await db.auth.verifyOtp({ phone:otpPhone, token, type:'sms' });
+  btn.disabled=false; btn.textContent='تحقق ✓';
+  if(error){ err.textContent = error.message || 'رمز غير صحيح'; err.style.display='block'; return; }
+
+  currentUser = data.user; clearInterval(resendInt);
+  const { data:profile } = await db.from('profiles').select('display_name').eq('id',currentUser.id).single();
+  if(!profile){ await db.from('profiles').upsert({ id:currentUser.id, phone:otpPhone }); }
+  closeOv('ovAuth');
+  unlockForm(profile?.display_name || '');
+  showToast('✓ تم التحقق — أكمل بيانات الطلب');
+}
+
+async function resendOTP(){
+  startWebOTP();
+  await db.auth.signInWithOtp({ phone: otpPhone });
+  OTP_IDS.forEach(id=>{ const el=document.getElementById(id); el.value=''; el.classList.remove('done'); });
+  document.getElementById('d1').focus(); startTimer();
+  showToast('📨 تم إعادة إرسال الرمز');
+}
+function startTimer(){
+  let s=60; const row=document.getElementById('resendRow');
+  row.innerHTML = 'إعادة الإرسال بعد <span id="timerN" style="color:var(--em);font-weight:600;">'+s+'</span> ثانية';
+  clearInterval(resendInt);
+  resendInt=setInterval(()=>{
+    s--; const n=document.getElementById('timerN'); if(n) n.textContent=s;
+    if(s<=0){ clearInterval(resendInt); row.innerHTML='<button class="resend-btn" onclick="resendOTP()">إعادة إرسال الرمز</button>'; }
+  },1000);
+}
+
+/* ── إرسال طلب الاستلام ── */
+async function submitClaim(){
+  const name     = document.getElementById('cName').value.trim();
+  const role     = document.getElementById('cRole').value;
+  const cr       = document.getElementById('cCr').value.trim();
+  const email    = document.getElementById('cEmail').value.trim();
+  const evidence = document.getElementById('cEvidence').value.trim();
+  const note     = document.getElementById('cNote').value.trim();
+
+  if(name.length < 5)                 return showToast('اكتب اسم مقدّم الطلب كاملاً','var(--rd)');
+  if(!role)                           return showToast('اختر صفتك من المنشأة','var(--rd)');
+  if(!/^\d{10}$/.test(cr))            return showToast('رقم السجل التجاري يتكوّن من ١٠ أرقام','var(--rd)');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)) return showToast('اكتب بريداً إلكترونياً صحيحاً','var(--rd)');
+
+  const { data:{ session } } = await db.auth.getSession();
+  if(!session?.user){ openOv('ovAuth'); return; }
+
+  const btn=document.getElementById('cBtn'); btn.disabled=true; btn.textContent='جاري الإرسال...';
+
+  const { error } = await db.from('store_claims').insert({
+    store_id     : claimStore?.id || null,
+    claimant_id  : session.user.id,
+    claimant_name: name,
+    claimant_role: role,
+    cr_number    : cr,
+    official_email: email,
+    evidence_url : evidence || null,
+    note         : note || null
+  });
+
+  btn.disabled=false; btn.textContent='إرسال طلب الاستلام';
+
+  if(error){
+    console.error(error);
+    const dup = String(error.message||'').includes('duplicate') || error.code === '23505';
+    return showToast(dup ? 'لديك طلب قائم على هذا المتجر قيد المراجعة' : 'تعذّر إرسال الطلب','var(--rd)');
+  }
+
+  document.getElementById('claimForm').style.display = 'none';
+  document.getElementById('claimDone').style.display = 'block';
+}
+
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); }));
+init();
+</script>
+</body>
+</html>
