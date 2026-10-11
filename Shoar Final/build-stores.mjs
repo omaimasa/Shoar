@@ -317,6 +317,8 @@ async function writeSitemap(storeUrls) {
   const stat = [
     ['/', '1.0', 'daily'], ['/pages/category.html','0.9','daily'],
     ['/blog.html','0.9','weekly'],
+    ['/blog/safe-online-payment-methods.html','0.8','monthly'],
+    ['/blog/real-vs-fake-discounts.html','0.8','monthly'],
     ['/blog/how-to-verify-store-credibility.html','0.8','monthly'],
     ['/blog/signs-of-fake-reviews.html','0.8','monthly'],
     ['/blog/saudi-consumer-rights.html','0.8','monthly'],
